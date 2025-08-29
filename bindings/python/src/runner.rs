@@ -1,10 +1,10 @@
 use pyo3::{exceptions::PyRuntimeError, prelude::*};
 
 #[pyfunction]
-pub(crate) fn run(py: Python<'_>, publish: PyObject) -> PyResult<&PyAny> {
+pub(crate) fn run(py: Python<'_>, publish: PyObject) -> PyResult<Bound<'_, PyAny>> {
     let wrapper = crate::publish_wrapper::PublishWrapper::new(publish);
 
-    pyo3_asyncio::tokio::future_into_py::<_, crate::Context>(py, async move {
+    pyo3_async_runtimes::tokio::future_into_py::<_, crate::Context>(py, async move {
         let context = publish::run(&wrapper)
             .await
             .map_err(|err| PyRuntimeError::new_err(err.to_string()))?;

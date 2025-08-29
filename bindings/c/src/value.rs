@@ -4,7 +4,7 @@ use std::{
     ptr::{null, null_mut},
 };
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct CPublishValue {
     pub value: publish::Value,
 }
@@ -25,6 +25,25 @@ pub enum CPublishValueType {
     CPublishValueTypeString,
     CPublishValueTypeArray,
     CPublishValueTypeObject,
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn cpublish_value_clone(
+    value: *const CPublishValue,
+    status: *mut crate::CPublishStatus,
+) -> *mut CPublishValue {
+    cpublish_status_ok(status);
+
+    match value.as_ref() {
+        Some(value) => Box::into_raw(Box::new(value.clone())),
+        None => {
+            if !status.is_null() {
+                *status = CPublishStatus::new_error("value is null");
+            }
+
+            null_mut()
+        }
+    }
 }
 
 #[no_mangle]
@@ -115,6 +134,37 @@ pub unsafe extern "C" fn cpublish_value_type(
         publish::Value::Array(_) => CPublishValueType::CPublishValueTypeArray,
         publish::Value::Object(_) => CPublishValueType::CPublishValueTypeObject,
     }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn cpublish_value_eq(
+    value: *const CPublishValue,
+    other: *const CPublishValue,
+    status: *mut CPublishStatus,
+) -> bool {
+    cpublish_status_ok(status);
+
+    let value = match value.as_ref() {
+        Some(value) => value,
+        None => {
+            if !status.is_null() {
+                *status = CPublishStatus::new_error("value is null");
+            }
+            return false;
+        }
+    };
+
+    let other = match other.as_ref() {
+        Some(other) => other,
+        None => {
+            if !status.is_null() {
+                *status = CPublishStatus::new_error("other is null");
+            }
+            return false;
+        }
+    };
+
+    value == other
 }
 
 #[no_mangle]

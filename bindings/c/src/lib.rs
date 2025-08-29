@@ -28,12 +28,12 @@ pub use status::{
 };
 pub use value::{
     cpublish_value_array_get, cpublish_value_array_iter, cpublish_value_array_len,
-    cpublish_value_array_push, cpublish_value_bool, cpublish_value_destroy, cpublish_value_float,
-    cpublish_value_int, cpublish_value_iter_array_destroy, cpublish_value_iter_array_is_done,
-    cpublish_value_iter_array_next, cpublish_value_iter_array_value,
-    cpublish_value_iter_object_destroy, cpublish_value_iter_object_is_done,
-    cpublish_value_iter_object_key, cpublish_value_iter_object_next,
-    cpublish_value_iter_object_value, cpublish_value_new_array,
+    cpublish_value_array_push, cpublish_value_bool, cpublish_value_clone, cpublish_value_destroy,
+    cpublish_value_eq, cpublish_value_float, cpublish_value_int, cpublish_value_iter_array_destroy,
+    cpublish_value_iter_array_is_done, cpublish_value_iter_array_next,
+    cpublish_value_iter_array_value, cpublish_value_iter_object_destroy,
+    cpublish_value_iter_object_is_done, cpublish_value_iter_object_key,
+    cpublish_value_iter_object_next, cpublish_value_iter_object_value, cpublish_value_new_array,
     cpublish_value_new_array_with_capacity, cpublish_value_new_bool, cpublish_value_new_float,
     cpublish_value_new_int, cpublish_value_new_none, cpublish_value_new_object,
     cpublish_value_new_object_with_capacity, cpublish_value_new_string, cpublish_value_object_get,

@@ -21,11 +21,15 @@ where
             return Err(err);
         }
     };
+    let pre_publish_context = match pre_publish_context {
+        Some(ref ctx) => ctx,
+        None => &context,
+    };
 
-    let publish_context = match publish.publish(&pre_publish_context).await {
+    let publish_context = match publish.publish(pre_publish_context).await {
         Ok(ctx) => ctx,
         Err(err) => {
-            if let Err(rollback_err) = publish.rollback_publish(&pre_publish_context).await {
+            if let Err(rollback_err) = publish.rollback_publish(pre_publish_context).await {
                 return Err(crate::Error::new_rollback(
                     "Error while rolling back publish",
                     Box::new(err),
@@ -44,18 +48,22 @@ where
             return Err(err);
         }
     };
+    let publish_context = match publish_context {
+        Some(ref ctx) => ctx,
+        None => pre_publish_context,
+    };
 
-    let post_publish_context = match publish.post_publish(&publish_context).await {
+    let post_publish_context = match publish.post_publish(publish_context).await {
         Ok(ctx) => ctx,
         Err(err) => {
-            if let Err(rollback_err) = publish.rollback_post_publish(&publish_context).await {
+            if let Err(rollback_err) = publish.rollback_post_publish(publish_context).await {
                 return Err(crate::Error::new_rollback(
                     "Error while rolling back post_publish",
                     Box::new(err),
                     Some(Box::new(rollback_err)),
                 ));
             }
-            if let Err(rollback_err) = publish.rollback_publish(&pre_publish_context).await {
+            if let Err(rollback_err) = publish.rollback_publish(pre_publish_context).await {
                 return Err(crate::Error::new_rollback(
                     "Error while rolling back publish",
                     Box::new(err),
@@ -74,6 +82,10 @@ where
             return Err(err);
         }
     };
+    let post_publish_context = match post_publish_context {
+        Some(ref ctx) => ctx,
+        None => publish_context,
+    };
 
-    Ok(post_publish_context.into_owned())
+    Ok(post_publish_context.to_owned())
 }

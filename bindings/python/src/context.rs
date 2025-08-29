@@ -9,7 +9,7 @@ pub(crate) struct Value {
 }
 
 impl<'py> FromPyObject<'py> for Value {
-    fn extract(obj: &'py PyAny) -> PyResult<Self> {
+    fn extract_bound(obj: &Bound<'py, PyAny>) -> PyResult<Self> {
         if obj.is_none() {
             Ok(Self {
                 inner: publish::Value::None,
@@ -49,46 +49,41 @@ impl<'py> FromPyObject<'py> for Value {
     }
 }
 
-impl IntoPy<PyObject> for Value {
-    fn into_py(self, py: Python<'_>) -> PyObject {
+impl<'py> IntoPyObject<'py> for Value {
+    type Target = PyAny;
+    type Output = Bound<'py, Self::Target>; // in most cases this will be `Bound`
+    type Error = PyErr; // the conversion error type, has to be convertible to `PyErr`
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         match self.inner {
-            publish::Value::None => py.None(),
-            publish::Value::Boolean(value) => value.to_object(py),
-            publish::Value::Integer(value) => value.to_object(py),
-            publish::Value::Float(value) => value.to_object(py),
-            publish::Value::String(value) => value.to_object(py),
+            publish::Value::None => py.None().into_pyobject(py).map_err(|err| err.into()),
+            publish::Value::Boolean(value) => value
+                .into_pyobject(py)
+                .map(|v| v.as_any().clone())
+                .map_err(|err| err.into()),
+            publish::Value::Integer(value) => value
+                .into_pyobject(py)
+                .map(|v| v.into_any())
+                .map_err(|err| err.into()),
+            publish::Value::Float(value) => value
+                .into_pyobject(py)
+                .map(|v| v.into_any())
+                .map_err(|err| err.into()),
+            publish::Value::String(value) => value
+                .into_pyobject(py)
+                .map(|v| v.into_any())
+                .map_err(|err| err.into()),
             publish::Value::Array(value) => value
                 .into_iter()
                 .map(|v| Value { inner: v })
                 .collect::<Vec<Value>>()
-                .to_object(py),
+                .into_pyobject(py),
             publish::Value::Object(value) => value
                 .into_iter()
                 .map(|(k, v)| (k, Value { inner: v }))
                 .collect::<std::collections::HashMap<String, Value>>()
-                .to_object(py),
-        }
-    }
-}
-
-impl ToPyObject for Value {
-    fn to_object(&self, py: Python<'_>) -> PyObject {
-        match &self.inner {
-            publish::Value::None => py.None(),
-            publish::Value::Boolean(value) => value.to_object(py),
-            publish::Value::Integer(value) => value.to_object(py),
-            publish::Value::Float(value) => value.to_object(py),
-            publish::Value::String(value) => value.to_object(py),
-            publish::Value::Array(value) => value
-                .iter()
-                .map(|v| Value { inner: v.clone() })
-                .collect::<Vec<Value>>()
-                .to_object(py),
-            publish::Value::Object(value) => value
-                .iter()
-                .map(|(k, v)| (k, Value { inner: v.clone() }))
-                .collect::<std::collections::HashMap<&String, Value>>()
-                .to_object(py),
+                .into_pyobject(py)
+                .map(|v| v.into_any()),
         }
     }
 }

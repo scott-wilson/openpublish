@@ -245,7 +245,14 @@ void cpublish_value_array_push(struct CPublishValue *value,
 
 bool cpublish_value_bool(const struct CPublishValue *value, struct CPublishStatus *status);
 
+struct CPublishValue *cpublish_value_clone(const struct CPublishValue *value,
+                                           struct CPublishStatus *status);
+
 void cpublish_value_destroy(struct CPublishValue *value);
+
+bool cpublish_value_eq(const struct CPublishValue *value,
+                       const struct CPublishValue *other,
+                       struct CPublishStatus *status);
 
 double cpublish_value_float(const struct CPublishValue *value, struct CPublishStatus *status);
 
@@ -314,4 +321,4 @@ struct CPublishString cpublish_value_string(const struct CPublishValue *value,
 enum CPublishValueType cpublish_value_type(const struct CPublishValue *value,
                                            struct CPublishStatus *status);
 
-#endif /* cpublish_h */
+#endif  /* cpublish_h */

@@ -9,7 +9,7 @@ name = "pypublish"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = "0.20.2"
+pyo3 = "0.25.1"
 publish = { path = "../../" }
-pyo3-asyncio = { version = "0.20.0", features = ["tokio-runtime"] }
-async-trait = "0.1.77"
+pyo3-async-runtimes = { version = "0.25.0", features = ["tokio-runtime"] }
+async-trait = "0.1.89"

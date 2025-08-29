@@ -53,7 +53,7 @@ impl Context {
         self.data.insert(key.to_string(), value);
     }
 
-    pub fn iter(&self) -> ContextIter {
+    pub fn iter(&self) -> ContextIter<'_> {
         ContextIter {
             data: self.data.iter(),
         }

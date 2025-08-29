@@ -12,24 +12,28 @@ impl Publish {
         Self
     }
 
-    fn pre_publish<'py>(&self, py: Python<'py>, context: ContextView) -> PyResult<&'py PyAny> {
-        pyo3_asyncio::tokio::future_into_py(py, async { Ok(context) })
+    fn pre_publish<'py>(
+        &self,
+        py: Python<'py>,
+        context: ContextView,
+    ) -> PyResult<Bound<'py, PyAny>> {
+        pyo3_async_runtimes::tokio::future_into_py(py, async { Ok(context) })
     }
 
     fn rollback_pre_publish<'py>(
         &self,
         py: Python<'py>,
         #[allow(unused_variables)] context: ContextView,
-    ) -> PyResult<&'py PyAny> {
-        pyo3_asyncio::tokio::future_into_py(py, async { Ok(()) })
+    ) -> PyResult<Bound<'py, PyAny>> {
+        pyo3_async_runtimes::tokio::future_into_py(py, async { Ok(()) })
     }
 
     fn publish<'py>(
         &self,
         py: Python<'py>,
         #[allow(unused_variables)] context: ContextView,
-    ) -> PyResult<&'py PyAny> {
-        pyo3_asyncio::tokio::future_into_py::<_, &'py PyAny>(py, async {
+    ) -> PyResult<Bound<'py, PyAny>> {
+        pyo3_async_runtimes::tokio::future_into_py::<_, ()>(py, async {
             Err(PyNotImplementedError::new_err("publish is not implemented"))
         })
     }
@@ -38,19 +42,23 @@ impl Publish {
         &self,
         py: Python<'py>,
         #[allow(unused_variables)] context: ContextView,
-    ) -> PyResult<&'py PyAny> {
-        pyo3_asyncio::tokio::future_into_py(py, async { Ok(()) })
+    ) -> PyResult<Bound<'py, PyAny>> {
+        pyo3_async_runtimes::tokio::future_into_py(py, async { Ok(()) })
     }
 
-    fn post_publish<'py>(&self, py: Python<'py>, context: ContextView) -> PyResult<&'py PyAny> {
-        pyo3_asyncio::tokio::future_into_py(py, async { Ok(context) })
+    fn post_publish<'py>(
+        &self,
+        py: Python<'py>,
+        context: ContextView,
+    ) -> PyResult<Bound<'py, PyAny>> {
+        pyo3_async_runtimes::tokio::future_into_py(py, async { Ok(context) })
     }
 
     fn rollback_post_publish<'py>(
         &self,
         py: Python<'py>,
         #[allow(unused_variables)] context: ContextView,
-    ) -> PyResult<&'py PyAny> {
-        pyo3_asyncio::tokio::future_into_py(py, async { Ok(()) })
+    ) -> PyResult<Bound<'py, PyAny>> {
+        pyo3_async_runtimes::tokio::future_into_py(py, async { Ok(()) })
     }
 }

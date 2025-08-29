@@ -5,31 +5,31 @@ impl publish::Publish for TestPublish {
     async fn pre_publish<'a>(
         &self,
         context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+    ) -> Result<Option<publish::Context>, publish::Error> {
         let mut context = context.to_owned();
         context.set("test", publish::Value::Integer(1));
 
-        Ok(std::borrow::Cow::Owned(context))
+        Ok(Some(context))
     }
 
     async fn publish<'a>(
         &self,
         context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+    ) -> Result<Option<publish::Context>, publish::Error> {
         let mut context = context.to_owned();
         context.set("test", publish::Value::Integer(2));
 
-        Ok(std::borrow::Cow::Owned(context))
+        Ok(Some(context))
     }
 
     async fn post_publish<'a>(
         &self,
         context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+    ) -> Result<Option<publish::Context>, publish::Error> {
         let mut context = context.to_owned();
         context.set("test", publish::Value::Integer(3));
 
-        Ok(std::borrow::Cow::Owned(context))
+        Ok(Some(context))
     }
 }
 

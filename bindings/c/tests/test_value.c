@@ -16,6 +16,24 @@
 ----------------------------------------------------------------------------
   Checks
 */
+static void test_cpublish_value_clone_success(void **state) {
+  CPublishStatus status;
+  CPublishValue *value = cpublish_value_new_none();
+  CPublishValue *cloned = cpublish_value_clone(value, &status);
+  validate_status_ok(&status);
+
+  CPublishValueType expected_type = cpublish_value_type(value, &status);
+  validate_status_ok(&status);
+  CPublishValueType result_type = cpublish_value_type(cloned, &status);
+  validate_status_ok(&status);
+
+  assert_int_equal(result_type, expected_type);
+
+  cpublish_value_destroy(value);
+  cpublish_value_destroy(cloned);
+  cpublish_status_destroy(&status);
+}
+
 static void test_cpublish_value_new_none_success(void **state) {
   CPublishStatus status;
   CPublishValue *value = cpublish_value_new_none();
@@ -326,6 +344,61 @@ static void test_cpublish_value_new_object_with_capacity_success(void **state) {
   cpublish_status_destroy(&status);
 }
 
+static void test_cpublish_value_comparison(void **state) {
+  CPublishStatus status;
+
+  CPublishValue *none = cpublish_value_new_none();
+  CPublishValue *bool_true = cpublish_value_new_bool(true);
+  CPublishValue *bool_false = cpublish_value_new_bool(false);
+  CPublishValue *int_0 = cpublish_value_new_int(0);
+  CPublishValue *int_1 = cpublish_value_new_int(1);
+  CPublishValue *float_0 = cpublish_value_new_float(0.0);
+  CPublishValue *float_1 = cpublish_value_new_float(1.0);
+  CPublishValue *string_empty = cpublish_value_new_string("");
+  CPublishValue *string_test = cpublish_value_new_string("test");
+  CPublishValue *array_empty = cpublish_value_new_array();
+  CPublishValue *array_1 = cpublish_value_new_array();
+  CPublishValue *object_empty = cpublish_value_new_object();
+  CPublishValue *object_1 = cpublish_value_new_object();
+
+  cpublish_value_array_push(array_1, none, &status);
+  validate_status_ok(&status);
+  cpublish_value_object_insert(object_1, "test", none, &status);
+  validate_status_ok(&status);
+
+  CPublishValue *values[] = {none,        bool_true,   bool_false, int_0,
+                             int_1,       float_0,     float_1,    string_empty,
+                             string_test, array_empty, array_1,    object_empty,
+                             object_1};
+
+  for (size_t i = 0; i < sizeof(values) / sizeof(values[0]); i++) {
+    for (size_t j = 0; j < sizeof(values) / sizeof(values[0]); j++) {
+      if (i == j) {
+        assert_true(cpublish_value_eq(values[i], values[j], &status));
+        validate_status_ok(&status);
+      } else {
+        assert_false(cpublish_value_eq(values[i], values[j], &status));
+        validate_status_ok(&status);
+      }
+    }
+  }
+
+  cpublish_value_destroy(none);
+  cpublish_value_destroy(bool_true);
+  cpublish_value_destroy(bool_false);
+  cpublish_value_destroy(int_0);
+  cpublish_value_destroy(int_1);
+  cpublish_value_destroy(float_0);
+  cpublish_value_destroy(float_1);
+  cpublish_value_destroy(string_empty);
+  cpublish_value_destroy(string_test);
+  cpublish_value_destroy(array_empty);
+  cpublish_value_destroy(array_1);
+  cpublish_value_destroy(object_empty);
+  cpublish_value_destroy(object_1);
+  cpublish_status_destroy(&status);
+}
+
 int main(void) {
   const struct CMUnitTest tests[] = {
       cmocka_unit_test(test_cpublish_value_new_none_success),
@@ -337,6 +410,7 @@ int main(void) {
       cmocka_unit_test(test_cpublish_value_new_array_with_capacity_success),
       cmocka_unit_test(test_cpublish_value_new_object_success),
       cmocka_unit_test(test_cpublish_value_new_object_with_capacity_success),
+      cmocka_unit_test(test_cpublish_value_comparison),
   };
 
   return cmocka_run_group_tests(tests, NULL, NULL);

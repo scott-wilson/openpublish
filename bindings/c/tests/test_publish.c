@@ -42,7 +42,7 @@ CPublishContext *publish_should_fail(const CPublishBasePublish *publish,
   assert_non_null(context);
   assert_non_null(status);
 
-  cpublish_status_error(status, "Should not be called");
+  cpublish_status_error(status, "Should fail");
 
   return NULL;
 }
@@ -66,7 +66,7 @@ void rollback_should_fail(const CPublishBasePublish *publish,
   assert_non_null(context);
   assert_non_null(status);
 
-  cpublish_status_error(status, "Should not be called");
+  cpublish_status_error(status, "Should fail");
 }
 
 /*

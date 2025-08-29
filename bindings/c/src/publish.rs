@@ -41,7 +41,7 @@ impl publish::Publish for CPublishBasePublish {
     async fn pre_publish<'a>(
         &self,
         context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+    ) -> Result<Option<publish::Context>, publish::Error> {
         let c_context = context as *const publish::Context as *const CPublishContext;
         let mut status = CPublishStatus::new_ok();
 
@@ -49,8 +49,8 @@ impl publish::Publish for CPublishBasePublish {
 
         let out_result = match status.status {
             crate::CPublishStatusType::CPublishStatusTypeOk => match unsafe { result.as_ref() } {
-                Some(c_context) => Ok(std::borrow::Cow::Owned(c_context.inner.clone())),
-                None => Ok(std::borrow::Cow::Borrowed(context)),
+                Some(c_context) => Ok(Some(c_context.inner.clone())),
+                None => Ok(None),
             },
             crate::CPublishStatusType::CPublishStatusTypeError => {
                 let message = unsafe { CStr::from_ptr(status.message) };
@@ -85,7 +85,7 @@ impl publish::Publish for CPublishBasePublish {
     async fn publish<'a>(
         &self,
         context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+    ) -> Result<Option<publish::Context>, publish::Error> {
         let c_context = context as *const publish::Context as *const CPublishContext;
         let mut status = CPublishStatus::new_ok();
 
@@ -93,8 +93,8 @@ impl publish::Publish for CPublishBasePublish {
 
         let out_result = match status.status {
             crate::CPublishStatusType::CPublishStatusTypeOk => match unsafe { result.as_ref() } {
-                Some(c_context) => Ok(std::borrow::Cow::Owned(c_context.inner.clone())),
-                None => Ok(std::borrow::Cow::Borrowed(context)),
+                Some(c_context) => Ok(Some(c_context.inner.clone())),
+                None => Ok(None),
             },
             crate::CPublishStatusType::CPublishStatusTypeError => {
                 let message = unsafe { CStr::from_ptr(status.message) };
@@ -129,7 +129,7 @@ impl publish::Publish for CPublishBasePublish {
     async fn post_publish<'a>(
         &self,
         context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+    ) -> Result<Option<publish::Context>, publish::Error> {
         let c_context = context as *const publish::Context as *const CPublishContext;
         let mut status = CPublishStatus::new_ok();
 
@@ -137,8 +137,11 @@ impl publish::Publish for CPublishBasePublish {
 
         let out_result = match status.status {
             crate::CPublishStatusType::CPublishStatusTypeOk => match unsafe { result.as_ref() } {
-                Some(c_context) => Ok(std::borrow::Cow::Owned(c_context.inner.clone())),
-                None => Ok(std::borrow::Cow::Borrowed(context)),
+                Some(c_context) => {
+                    println!("{:?}", c_context.inner.len());
+                    Ok(Some(c_context.inner.clone()))
+                }
+                None => Ok(None),
             },
             crate::CPublishStatusType::CPublishStatusTypeError => {
                 let message = unsafe { CStr::from_ptr(status.message) };
