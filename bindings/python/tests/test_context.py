@@ -3,7 +3,7 @@
 import hypothesis
 from hypothesis import strategies
 
-import pypublish
+import openpublish
 
 
 @hypothesis.given(
@@ -27,8 +27,8 @@ import pypublish
         max_leaves=10,
     ),
 )
-def test_context_get_success(key: str, value: pypublish.Value) -> None:
-    ctx = pypublish.Context()
+def test_context_get_success(key: str, value: openpublish.Value) -> None:
+    ctx = openpublish.Context()
     ctx.set(key, value)
 
     assert ctx.get(key) == value
@@ -55,8 +55,8 @@ def test_context_get_success(key: str, value: pypublish.Value) -> None:
         max_leaves=10,
     ),
 )
-def test_contextview_get_success(key: str, value: pypublish.Value) -> None:
-    ctx = pypublish.Context()
+def test_contextview_get_success(key: str, value: openpublish.Value) -> None:
+    ctx = openpublish.Context()
     ctx.set(key, value)
     ctx_view = ctx.to_view()
 

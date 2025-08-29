@@ -11,24 +11,30 @@ impl PublishWrapper {
 }
 
 #[async_trait::async_trait]
-impl publish::Publish for PublishWrapper {
+impl base_openpublish::Publish for PublishWrapper {
     async fn pre_publish<'a>(
         &self,
-        context: &'a publish::Context,
-    ) -> Result<Option<publish::Context>, publish::Error> {
+        context: &'a base_openpublish::Context,
+    ) -> Result<Option<base_openpublish::Context>, base_openpublish::Error> {
         let context_view = crate::Context::from(context.clone()).to_view();
 
         let result = Python::with_gil(|py| {
             self.inner
                 .call_method1(py, intern!(py, "pre_publish"), (context_view,))
         })
-        .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+        .map_err(|err| {
+            base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+        })?;
 
         let result =
             Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
-                .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?
+                .map_err(|err| {
+                    base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+                })?
                 .await
-                .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+                .map_err(|err| {
+                    base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+                })?;
 
         Python::with_gil(|py| {
             let obj = result.clone_ref(py);
@@ -46,10 +52,13 @@ impl publish::Publish for PublishWrapper {
                 )))
             }
         })
-        .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))
+        .map_err(|err| base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err))))
     }
 
-    async fn rollback_pre_publish(&self, context: &publish::Context) -> Result<(), publish::Error> {
+    async fn rollback_pre_publish(
+        &self,
+        context: &base_openpublish::Context,
+    ) -> Result<(), base_openpublish::Error> {
         let context: crate::Context = context.clone().into();
         let context_view = context.to_view();
 
@@ -58,7 +67,7 @@ impl publish::Publish for PublishWrapper {
                 .call_method1(py, intern!(py, "rollback_pre_publish"), (context_view,))
         })
         .map_err(|err| {
-            publish::Error::new_rollback(
+            base_openpublish::Error::new_rollback(
                 "Error while rolling back pre_publish",
                 Box::new(err),
                 None,
@@ -66,30 +75,40 @@ impl publish::Publish for PublishWrapper {
         })?;
 
         Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
-            .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?
+            .map_err(|err| {
+                base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+            })?
             .await
-            .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+            .map_err(|err| {
+                base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+            })?;
 
         Ok(())
     }
 
     async fn publish<'a>(
         &self,
-        context: &'a publish::Context,
-    ) -> Result<Option<publish::Context>, publish::Error> {
+        context: &'a base_openpublish::Context,
+    ) -> Result<Option<base_openpublish::Context>, base_openpublish::Error> {
         let context_view = crate::Context::from(context.clone()).to_view();
 
         let result = Python::with_gil(|py| {
             self.inner
                 .call_method1(py, intern!(py, "publish"), (context_view,))
         })
-        .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+        .map_err(|err| {
+            base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+        })?;
 
         let result =
             Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
-                .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?
+                .map_err(|err| {
+                    base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+                })?
                 .await
-                .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+                .map_err(|err| {
+                    base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+                })?;
 
         Python::with_gil(|py| {
             let obj = result.clone_ref(py);
@@ -107,10 +126,13 @@ impl publish::Publish for PublishWrapper {
                 )))
             }
         })
-        .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))
+        .map_err(|err| base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err))))
     }
 
-    async fn rollback_publish(&self, context: &publish::Context) -> Result<(), publish::Error> {
+    async fn rollback_publish(
+        &self,
+        context: &base_openpublish::Context,
+    ) -> Result<(), base_openpublish::Error> {
         let context: crate::Context = context.clone().into();
         let context_view = context.to_view();
 
@@ -119,34 +141,48 @@ impl publish::Publish for PublishWrapper {
                 .call_method1(py, intern!(py, "rollback_publish"), (context_view,))
         })
         .map_err(|err| {
-            publish::Error::new_rollback("Error while rolling back publish", Box::new(err), None)
+            base_openpublish::Error::new_rollback(
+                "Error while rolling back publish",
+                Box::new(err),
+                None,
+            )
         })?;
 
         Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
-            .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?
+            .map_err(|err| {
+                base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+            })?
             .await
-            .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+            .map_err(|err| {
+                base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+            })?;
 
         Ok(())
     }
 
     async fn post_publish<'a>(
         &self,
-        context: &'a publish::Context,
-    ) -> Result<Option<publish::Context>, publish::Error> {
+        context: &'a base_openpublish::Context,
+    ) -> Result<Option<base_openpublish::Context>, base_openpublish::Error> {
         let context_view = crate::Context::from(context.clone()).to_view();
 
         let result = Python::with_gil(|py| {
             self.inner
                 .call_method1(py, intern!(py, "post_publish"), (context_view,))
         })
-        .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+        .map_err(|err| {
+            base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+        })?;
 
         let result =
             Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
-                .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?
+                .map_err(|err| {
+                    base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+                })?
                 .await
-                .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+                .map_err(|err| {
+                    base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+                })?;
 
         Python::with_gil(|py| {
             let obj = result.clone_ref(py);
@@ -164,13 +200,13 @@ impl publish::Publish for PublishWrapper {
                 )))
             }
         })
-        .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))
+        .map_err(|err| base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err))))
     }
 
     async fn rollback_post_publish(
         &self,
-        context: &publish::Context,
-    ) -> Result<(), publish::Error> {
+        context: &base_openpublish::Context,
+    ) -> Result<(), base_openpublish::Error> {
         let context: crate::Context = context.clone().into();
         let context_view = context.to_view();
 
@@ -179,7 +215,7 @@ impl publish::Publish for PublishWrapper {
                 .call_method1(py, intern!(py, "rollback_post_publish"), (context_view,))
         })
         .map_err(|err| {
-            publish::Error::new_rollback(
+            base_openpublish::Error::new_rollback(
                 "Error while rolling back post_publish",
                 Box::new(err),
                 None,
@@ -187,9 +223,13 @@ impl publish::Publish for PublishWrapper {
         })?;
 
         Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
-            .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?
+            .map_err(|err| {
+                base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+            })?
             .await
-            .map_err(|err| publish::Error::new_publish(err.to_string(), Some(Box::new(err))))?;
+            .map_err(|err| {
+                base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
+            })?;
 
         Ok(())
     }
