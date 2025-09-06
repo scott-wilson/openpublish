@@ -1,7 +1,7 @@
-cpublish
-=======
+openpublish
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   cpublish
+   openpublish

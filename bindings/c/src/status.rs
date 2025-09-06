@@ -5,18 +5,18 @@ use std::{
 
 #[derive(Debug, PartialEq)]
 #[repr(C)]
-pub enum CPublishStatusType {
-    CPublishStatusTypeOk,
-    CPublishStatusTypeError,
+pub enum OpenPublishStatusType {
+    OpenPublishStatusTypeOk,
+    OpenPublishStatusTypeError,
 }
 
 #[repr(C)]
-pub struct CPublishStatus {
-    pub status: CPublishStatusType,
+pub struct OpenPublishStatus {
+    pub status: OpenPublishStatusType,
     pub message: *const c_char,
 }
 
-impl Drop for CPublishStatus {
+impl Drop for OpenPublishStatus {
     fn drop(&mut self) {
         unsafe {
             if !self.message.is_null() {
@@ -27,38 +27,38 @@ impl Drop for CPublishStatus {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_status_ok(status: *mut CPublishStatus) {
+pub unsafe extern "C" fn openpublish_status_ok(status: *mut OpenPublishStatus) {
     if let Some(status) = status.as_mut() {
         // We need to replace the current status value with a new one without
         // dropping the old one, otherwise we may get a segfault.
-        let old_value = std::mem::replace(status, CPublishStatus::new_ok());
+        let old_value = std::mem::replace(status, OpenPublishStatus::new_ok());
         std::mem::forget(old_value);
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_status_error(
-    status: *mut CPublishStatus,
+pub unsafe extern "C" fn openpublish_status_error(
+    status: *mut OpenPublishStatus,
     message: *const c_char,
 ) {
     if let Some(status) = status.as_mut() {
         let message = CStr::from_ptr(message).to_string_lossy();
-        let old_value = std::mem::replace(status, CPublishStatus::new_error(message));
+        let old_value = std::mem::replace(status, OpenPublishStatus::new_error(message));
         std::mem::forget(old_value);
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_status_destroy(status: *mut CPublishStatus) {
+pub unsafe extern "C" fn openpublish_status_destroy(status: *mut OpenPublishStatus) {
     if !status.is_null() {
         status.drop_in_place();
     }
 }
 
-impl CPublishStatus {
+impl OpenPublishStatus {
     pub fn new_ok() -> Self {
         Self {
-            status: CPublishStatusType::CPublishStatusTypeOk,
+            status: OpenPublishStatusType::OpenPublishStatusTypeOk,
             message: null(),
         }
     }
@@ -66,7 +66,7 @@ impl CPublishStatus {
     pub fn new_error<T: AsRef<str>>(message: T) -> Self {
         let message = CString::new(message.as_ref()).unwrap();
         Self {
-            status: CPublishStatusType::CPublishStatusTypeError,
+            status: OpenPublishStatusType::OpenPublishStatusTypeError,
             message: message.into_raw(),
         }
     }

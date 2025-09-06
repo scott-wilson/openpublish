@@ -1,48 +1,51 @@
-use crate::{cpublish_status_ok, CPublishStatus, CPublishStringView};
+use crate::{openpublish_status_ok, OpenPublishStatus, OpenPublishStringView};
 use std::{
     ffi::{c_char, CStr, CString},
     ptr::{null, null_mut},
 };
-pub struct CPublishContext {
-    pub inner: publish::Context,
+
+pub struct OpenPublishContext {
+    pub inner: base_openpublish::Context,
 }
 
-impl From<publish::Context> for CPublishContext {
-    fn from(value: publish::Context) -> Self {
+impl From<base_openpublish::Context> for OpenPublishContext {
+    fn from(value: base_openpublish::Context) -> Self {
         Self { inner: value }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_new() -> *mut CPublishContext {
-    let inner = publish::Context::default();
-    Box::into_raw(Box::new(CPublishContext { inner }))
+pub unsafe extern "C" fn openpublish_context_new() -> *mut OpenPublishContext {
+    let inner = base_openpublish::Context::default();
+    Box::into_raw(Box::new(OpenPublishContext { inner }))
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_destroy(context: *mut CPublishContext) {
+pub unsafe extern "C" fn openpublish_context_destroy(context: *mut OpenPublishContext) {
     if !context.is_null() {
         drop(Box::from_raw(context));
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_get(
-    context: *const CPublishContext,
+pub unsafe extern "C" fn openpublish_context_get(
+    context: *const OpenPublishContext,
     key: *const c_char,
-    status: *mut crate::CPublishStatus,
-) -> *const crate::CPublishValue {
-    cpublish_status_ok(status);
+    status: *mut crate::OpenPublishStatus,
+) -> *const crate::OpenPublishValue {
+    openpublish_status_ok(status);
 
     match context.as_ref() {
         Some(context) => match CStr::from_ptr(key).to_str() {
             Ok(key) => match context.inner.get(key) {
-                Some(value) => value as *const publish::Value as *const crate::CPublishValue,
+                Some(value) => {
+                    value as *const base_openpublish::Value as *const crate::OpenPublishValue
+                }
                 None => null(),
             },
             Err(_) => {
                 if !status.is_null() {
-                    *status = CPublishStatus::new_error("key is not a valid c-string");
+                    *status = OpenPublishStatus::new_error("key is not a valid c-string");
                 }
 
                 null()
@@ -50,7 +53,7 @@ pub unsafe extern "C" fn cpublish_context_get(
         },
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
 
             null()
@@ -59,13 +62,13 @@ pub unsafe extern "C" fn cpublish_context_get(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_set(
-    context: *mut CPublishContext,
+pub unsafe extern "C" fn openpublish_context_set(
+    context: *mut OpenPublishContext,
     key: *const c_char,
-    value: *const crate::CPublishValue,
-    status: *mut crate::CPublishStatus,
+    value: *const crate::OpenPublishValue,
+    status: *mut crate::OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_mut() {
         Some(context) => {
@@ -74,7 +77,7 @@ pub unsafe extern "C" fn cpublish_context_set(
                     Ok(key) => key,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("key is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("key is not a valid c-string");
                         }
 
                         return;
@@ -82,7 +85,7 @@ pub unsafe extern "C" fn cpublish_context_set(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("key is null");
+                        *status = OpenPublishStatus::new_error("key is null");
                     }
 
                     return;
@@ -93,7 +96,7 @@ pub unsafe extern "C" fn cpublish_context_set(
                 Some(value) => &value.value,
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("value is null");
+                        *status = OpenPublishStatus::new_error("value is null");
                     }
 
                     return;
@@ -104,19 +107,19 @@ pub unsafe extern "C" fn cpublish_context_set(
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_set_none(
-    context: *mut CPublishContext,
+pub unsafe extern "C" fn openpublish_context_set_none(
+    context: *mut OpenPublishContext,
     key: *const c_char,
-    status: *mut crate::CPublishStatus,
+    status: *mut crate::OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_mut() {
         Some(context) => {
@@ -125,7 +128,7 @@ pub unsafe extern "C" fn cpublish_context_set_none(
                     Ok(key) => key,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("key is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("key is not a valid c-string");
                         }
 
                         return;
@@ -133,31 +136,31 @@ pub unsafe extern "C" fn cpublish_context_set_none(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("key is null");
+                        *status = OpenPublishStatus::new_error("key is null");
                     }
 
                     return;
                 }
             };
 
-            context.inner.set(key, publish::Value::None);
+            context.inner.set(key, base_openpublish::Value::None);
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_set_bool(
-    context: *mut CPublishContext,
+pub unsafe extern "C" fn openpublish_context_set_bool(
+    context: *mut OpenPublishContext,
     key: *const c_char,
     value: bool,
-    status: *mut crate::CPublishStatus,
+    status: *mut crate::OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_mut() {
         Some(context) => {
@@ -166,7 +169,7 @@ pub unsafe extern "C" fn cpublish_context_set_bool(
                     Ok(key) => key,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("key is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("key is not a valid c-string");
                         }
 
                         return;
@@ -174,31 +177,33 @@ pub unsafe extern "C" fn cpublish_context_set_bool(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("key is null");
+                        *status = OpenPublishStatus::new_error("key is null");
                     }
 
                     return;
                 }
             };
 
-            context.inner.set(key, publish::Value::Boolean(value));
+            context
+                .inner
+                .set(key, base_openpublish::Value::Boolean(value));
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_set_int(
-    context: *mut CPublishContext,
+pub unsafe extern "C" fn openpublish_context_set_int(
+    context: *mut OpenPublishContext,
     key: *const c_char,
     value: i64,
-    status: *mut crate::CPublishStatus,
+    status: *mut crate::OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_mut() {
         Some(context) => {
@@ -207,7 +212,7 @@ pub unsafe extern "C" fn cpublish_context_set_int(
                     Ok(key) => key,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("key is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("key is not a valid c-string");
                         }
 
                         return;
@@ -215,31 +220,33 @@ pub unsafe extern "C" fn cpublish_context_set_int(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("key is null");
+                        *status = OpenPublishStatus::new_error("key is null");
                     }
 
                     return;
                 }
             };
 
-            context.inner.set(key, publish::Value::Integer(value));
+            context
+                .inner
+                .set(key, base_openpublish::Value::Integer(value));
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_set_float(
-    context: *mut CPublishContext,
+pub unsafe extern "C" fn openpublish_context_set_float(
+    context: *mut OpenPublishContext,
     key: *const c_char,
     value: f64,
-    status: *mut crate::CPublishStatus,
+    status: *mut crate::OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_mut() {
         Some(context) => {
@@ -248,7 +255,7 @@ pub unsafe extern "C" fn cpublish_context_set_float(
                     Ok(key) => key,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("key is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("key is not a valid c-string");
                         }
 
                         return;
@@ -256,31 +263,33 @@ pub unsafe extern "C" fn cpublish_context_set_float(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("key is null");
+                        *status = OpenPublishStatus::new_error("key is null");
                     }
 
                     return;
                 }
             };
 
-            context.inner.set(key, publish::Value::Float(value));
+            context
+                .inner
+                .set(key, base_openpublish::Value::Float(value));
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_set_string(
-    context: *mut CPublishContext,
+pub unsafe extern "C" fn openpublish_context_set_string(
+    context: *mut OpenPublishContext,
     key: *const c_char,
     value: *const c_char,
-    status: *mut crate::CPublishStatus,
+    status: *mut crate::OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_mut() {
         Some(context) => {
@@ -289,7 +298,7 @@ pub unsafe extern "C" fn cpublish_context_set_string(
                     Ok(key) => key,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("key is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("key is not a valid c-string");
                         }
 
                         return;
@@ -297,7 +306,7 @@ pub unsafe extern "C" fn cpublish_context_set_string(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("key is null");
+                        *status = OpenPublishStatus::new_error("key is null");
                     }
 
                     return;
@@ -308,7 +317,7 @@ pub unsafe extern "C" fn cpublish_context_set_string(
                     Ok(value) => value,
                     Err(_) => {
                         if !status.is_null() {
-                            *status = CPublishStatus::new_error("value is not a valid c-string");
+                            *status = OpenPublishStatus::new_error("value is not a valid c-string");
                         }
 
                         return;
@@ -316,7 +325,7 @@ pub unsafe extern "C" fn cpublish_context_set_string(
                 },
                 None => {
                     if !status.is_null() {
-                        *status = CPublishStatus::new_error("value is null");
+                        *status = OpenPublishStatus::new_error("value is null");
                     }
 
                     return;
@@ -325,28 +334,28 @@ pub unsafe extern "C" fn cpublish_context_set_string(
 
             context
                 .inner
-                .set(key, publish::Value::String(value.to_string()));
+                .set(key, base_openpublish::Value::String(value.to_string()));
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_len(
-    context: *const CPublishContext,
-    status: *mut crate::CPublishStatus,
+pub unsafe extern "C" fn openpublish_context_len(
+    context: *const OpenPublishContext,
+    status: *mut crate::OpenPublishStatus,
 ) -> usize {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_ref() {
         Some(context) => context.inner.len(),
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
 
             0
@@ -355,17 +364,17 @@ pub unsafe extern "C" fn cpublish_context_len(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_is_empty(
-    context: *const CPublishContext,
-    status: *mut crate::CPublishStatus,
+pub unsafe extern "C" fn openpublish_context_is_empty(
+    context: *const OpenPublishContext,
+    status: *mut crate::OpenPublishStatus,
 ) -> bool {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match context.as_ref() {
         Some(context) => context.inner.is_empty(),
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
 
             true
@@ -374,19 +383,19 @@ pub unsafe extern "C" fn cpublish_context_is_empty(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_clone(
-    context: *const CPublishContext,
-    status: *mut crate::CPublishStatus,
-) -> *mut CPublishContext {
-    cpublish_status_ok(status);
+pub unsafe extern "C" fn openpublish_context_clone(
+    context: *const OpenPublishContext,
+    status: *mut crate::OpenPublishStatus,
+) -> *mut OpenPublishContext {
+    openpublish_status_ok(status);
 
     match context.as_ref() {
-        Some(context) => Box::into_raw(Box::new(CPublishContext {
+        Some(context) => Box::into_raw(Box::new(OpenPublishContext {
             inner: context.inner.clone(),
         })),
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
 
             null_mut()
@@ -395,23 +404,23 @@ pub unsafe extern "C" fn cpublish_context_clone(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_iter(
-    context: *const CPublishContext,
-    status: *mut crate::CPublishStatus,
-) -> *mut CPublishContextIter {
-    cpublish_status_ok(status);
+pub unsafe extern "C" fn openpublish_context_iter(
+    context: *const OpenPublishContext,
+    status: *mut crate::OpenPublishStatus,
+) -> *mut OpenPublishContextIter {
+    openpublish_status_ok(status);
 
     let context = match context.as_ref() {
         Some(context) => &context.inner,
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("context is null");
+                *status = OpenPublishStatus::new_error("context is null");
             }
             return null_mut();
         }
     };
 
-    let iter = Box::new(CPublishContextIter {
+    let iter = Box::new(OpenPublishContextIter {
         iter: context.iter(),
         key: null_mut(),
         value: null_mut(),
@@ -419,25 +428,25 @@ pub unsafe extern "C" fn cpublish_context_iter(
     Box::into_raw(iter)
 }
 
-pub struct CPublishContextIter {
-    iter: publish::ContextIter<'static>,
+pub struct OpenPublishContextIter {
+    iter: base_openpublish::ContextIter<'static>,
     key: *const c_char,
-    value: *const crate::CPublishValue,
+    value: *const crate::OpenPublishValue,
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_iter_destroy(iter: *mut CPublishContextIter) {
+pub unsafe extern "C" fn openpublish_context_iter_destroy(iter: *mut OpenPublishContextIter) {
     if !iter.is_null() {
         drop(Box::from_raw(iter));
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_iter_next(
-    iter: *mut CPublishContextIter,
-    status: *mut CPublishStatus,
+pub unsafe extern "C" fn openpublish_context_iter_next(
+    iter: *mut OpenPublishContextIter,
+    status: *mut OpenPublishStatus,
 ) {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match iter.as_mut() {
         Some(iter) => {
@@ -452,36 +461,38 @@ pub unsafe extern "C" fn cpublish_context_iter_next(
                         Ok(key) => key.into_raw(),
                         Err(_) => {
                             if !status.is_null() {
-                                *status = CPublishStatus::new_error("key is not a valid c-string");
+                                *status =
+                                    OpenPublishStatus::new_error("key is not a valid c-string");
                             }
                             return;
                         }
                     };
-                    iter.value = value as *const publish::Value as *const crate::CPublishValue;
+                    iter.value =
+                        value as *const base_openpublish::Value as *const crate::OpenPublishValue;
                 }
                 None => iter.value = null(),
             }
         }
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("iter is null");
+                *status = OpenPublishStatus::new_error("iter is null");
             }
         }
     };
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_iter_is_done(
-    iter: *mut CPublishContextIter,
-    status: *mut CPublishStatus,
+pub unsafe extern "C" fn openpublish_context_iter_is_done(
+    iter: *mut OpenPublishContextIter,
+    status: *mut OpenPublishStatus,
 ) -> bool {
-    cpublish_status_ok(status);
+    openpublish_status_ok(status);
 
     match iter.as_mut() {
         Some(iter) => iter.value.is_null(),
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("iter is null");
+                *status = OpenPublishStatus::new_error("iter is null");
             }
 
             true
@@ -490,36 +501,36 @@ pub unsafe extern "C" fn cpublish_context_iter_is_done(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_iter_key(
-    iter: *mut CPublishContextIter,
-    status: *mut CPublishStatus,
-) -> CPublishStringView {
-    cpublish_status_ok(status);
+pub unsafe extern "C" fn openpublish_context_iter_key(
+    iter: *mut OpenPublishContextIter,
+    status: *mut OpenPublishStatus,
+) -> OpenPublishStringView {
+    openpublish_status_ok(status);
 
     match iter.as_mut() {
-        Some(iter) => CPublishStringView { string: iter.key },
+        Some(iter) => OpenPublishStringView { string: iter.key },
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("iter is null");
+                *status = OpenPublishStatus::new_error("iter is null");
             }
 
-            CPublishStringView { string: null() }
+            OpenPublishStringView { string: null() }
         }
     }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_context_iter_value(
-    iter: *mut CPublishContextIter,
-    status: *mut CPublishStatus,
-) -> *const crate::CPublishValue {
-    cpublish_status_ok(status);
+pub unsafe extern "C" fn openpublish_context_iter_value(
+    iter: *mut OpenPublishContextIter,
+    status: *mut OpenPublishStatus,
+) -> *const crate::OpenPublishValue {
+    openpublish_status_ok(status);
 
     match iter.as_mut() {
         Some(iter) => iter.value,
         None => {
             if !status.is_null() {
-                *status = CPublishStatus::new_error("iter is null");
+                *status = OpenPublishStatus::new_error("iter is null");
             }
 
             null()

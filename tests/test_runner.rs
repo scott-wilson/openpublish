@@ -1,35 +1,35 @@
 struct TestPublish;
 
 #[async_trait::async_trait]
-impl publish::Publish for TestPublish {
+impl openpublish::Publish for TestPublish {
     async fn pre_publish<'a>(
         &self,
-        context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+        context: &'a openpublish::Context,
+    ) -> Result<Option<openpublish::Context>, openpublish::Error> {
         let mut context = context.to_owned();
-        context.set("test", publish::Value::Integer(1));
+        context.set("test", openpublish::Value::Integer(1));
 
-        Ok(std::borrow::Cow::Owned(context))
+        Ok(Some(context))
     }
 
     async fn publish<'a>(
         &self,
-        context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+        context: &'a openpublish::Context,
+    ) -> Result<Option<openpublish::Context>, openpublish::Error> {
         let mut context = context.to_owned();
-        context.set("test", publish::Value::Integer(2));
+        context.set("test", openpublish::Value::Integer(2));
 
-        Ok(std::borrow::Cow::Owned(context))
+        Ok(Some(context))
     }
 
     async fn post_publish<'a>(
         &self,
-        context: &'a publish::Context,
-    ) -> Result<std::borrow::Cow<'a, publish::Context>, publish::Error> {
+        context: &'a openpublish::Context,
+    ) -> Result<Option<openpublish::Context>, openpublish::Error> {
         let mut context = context.to_owned();
-        context.set("test", publish::Value::Integer(3));
+        context.set("test", openpublish::Value::Integer(3));
 
-        Ok(std::borrow::Cow::Owned(context))
+        Ok(Some(context))
     }
 }
 
@@ -37,7 +37,7 @@ impl publish::Publish for TestPublish {
 async fn test_runner_success() {
     let test_publish = TestPublish;
 
-    let result = publish::run(&test_publish).await.unwrap();
+    let result = openpublish::run(&test_publish).await.unwrap();
 
-    assert_eq!(result.get("test").unwrap(), &publish::Value::Integer(3));
+    assert_eq!(result.get("test").unwrap(), &openpublish::Value::Integer(3));
 }

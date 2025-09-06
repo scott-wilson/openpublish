@@ -41,7 +41,7 @@ foreach(TEST ${TESTS})
     target_link_libraries(${TEST}
         PUBLIC
         cmocka
-        cpublish
+        openpublish
     )
     add_test(NAME ${TEST} COMMAND ${TEST})
 endforeach()

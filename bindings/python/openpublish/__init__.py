@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from typing import Dict, List, Union
 
-import pypublish.pypublish
-from pypublish.pypublish import *
+import openpublish.openpublish
+from openpublish.openpublish import *
 
 Value = Union[None, bool, int, float, str, List["Value"], Dict[str, "Value"]]
 
-__doc__ = pypublish.pypublish.__doc__
+__doc__ = openpublish.openpublish.__doc__

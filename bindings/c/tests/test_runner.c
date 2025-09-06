@@ -8,111 +8,113 @@
 
 #include <cmocka.h>
 
-#include "cpublish.h"
+#include "copenpublish.h"
 #include "test_utils.h"
 
-CPublishContext *pre_publish_should_pass(const CPublishBasePublish *publish,
-                                         const CPublishContext *context,
-                                         CPublishStatus *status) {
-  cpublish_status_ok(status);
+OpenPublishContext *
+pre_publish_should_pass(const OpenPublishBasePublish *publish,
+                        const OpenPublishContext *context,
+                        OpenPublishStatus *status) {
+  openpublish_status_ok(status);
   assert_non_null(publish);
   assert_non_null(context);
   assert_non_null(status);
 
-  CPublishContext *ctx = cpublish_context_clone(context, status);
+  OpenPublishContext *ctx = openpublish_context_clone(context, status);
 
-  if (status != NULL && status->status == CPublishStatusTypeError) {
+  if (status != NULL && status->status == OpenPublishStatusTypeError) {
     return NULL;
   }
 
-  cpublish_context_set_string(ctx, "pre_publish_key", "pre_publish_value",
-                              status);
+  openpublish_context_set_string(ctx, "pre_publish_key", "pre_publish_value",
+                                 status);
 
-  if (status != NULL && status->status == CPublishStatusTypeError) {
-    return NULL;
-  }
-
-  return ctx;
-}
-
-void rollback_pre_publish_should_pass(const CPublishBasePublish *publish,
-                                      const CPublishContext *context,
-                                      CPublishStatus *status) {
-  cpublish_status_ok(status);
-  assert_non_null(publish);
-  assert_non_null(context);
-  assert_non_null(status);
-
-  cpublish_status_ok(status);
-}
-
-CPublishContext *publish_should_pass(const CPublishBasePublish *publish,
-                                     const CPublishContext *context,
-                                     CPublishStatus *status) {
-  cpublish_status_ok(status);
-  assert_non_null(publish);
-  assert_non_null(context);
-  assert_non_null(status);
-
-  CPublishContext *ctx = cpublish_context_clone(context, status);
-
-  if (status != NULL && status->status == CPublishStatusTypeError) {
-    return NULL;
-  }
-
-  cpublish_context_set_string(ctx, "publish_key", "publish_value", status);
-
-  if (status != NULL && status->status == CPublishStatusTypeError) {
+  if (status != NULL && status->status == OpenPublishStatusTypeError) {
     return NULL;
   }
 
   return ctx;
 }
 
-void rollback_publish_should_pass(const CPublishBasePublish *publish,
-                                  const CPublishContext *context,
-                                  CPublishStatus *status) {
-  cpublish_status_ok(status);
+void rollback_pre_publish_should_pass(const OpenPublishBasePublish *publish,
+                                      const OpenPublishContext *context,
+                                      OpenPublishStatus *status) {
+  openpublish_status_ok(status);
   assert_non_null(publish);
   assert_non_null(context);
   assert_non_null(status);
 
-  cpublish_status_ok(status);
+  openpublish_status_ok(status);
 }
 
-CPublishContext *post_publish_should_pass(const CPublishBasePublish *publish,
-                                          const CPublishContext *context,
-                                          CPublishStatus *status) {
-  cpublish_status_ok(status);
+OpenPublishContext *publish_should_pass(const OpenPublishBasePublish *publish,
+                                        const OpenPublishContext *context,
+                                        OpenPublishStatus *status) {
+  openpublish_status_ok(status);
   assert_non_null(publish);
   assert_non_null(context);
   assert_non_null(status);
 
-  CPublishContext *ctx = cpublish_context_clone(context, status);
+  OpenPublishContext *ctx = openpublish_context_clone(context, status);
 
-  if (status != NULL && status->status == CPublishStatusTypeError) {
+  if (status != NULL && status->status == OpenPublishStatusTypeError) {
     return NULL;
   }
 
-  cpublish_context_set_string(ctx, "post_publish_key", "post_publish_value",
-                              status);
+  openpublish_context_set_string(ctx, "publish_key", "publish_value", status);
 
-  if (status != NULL && status->status == CPublishStatusTypeError) {
+  if (status != NULL && status->status == OpenPublishStatusTypeError) {
     return NULL;
   }
 
   return ctx;
 }
 
-void rollback_post_publish_should_pass(const CPublishBasePublish *publish,
-                                       const CPublishContext *context,
-                                       CPublishStatus *status) {
-  cpublish_status_ok(status);
+void rollback_publish_should_pass(const OpenPublishBasePublish *publish,
+                                  const OpenPublishContext *context,
+                                  OpenPublishStatus *status) {
+  openpublish_status_ok(status);
   assert_non_null(publish);
   assert_non_null(context);
   assert_non_null(status);
 
-  cpublish_status_ok(status);
+  openpublish_status_ok(status);
+}
+
+OpenPublishContext *
+post_publish_should_pass(const OpenPublishBasePublish *publish,
+                         const OpenPublishContext *context,
+                         OpenPublishStatus *status) {
+  openpublish_status_ok(status);
+  assert_non_null(publish);
+  assert_non_null(context);
+  assert_non_null(status);
+
+  OpenPublishContext *ctx = openpublish_context_clone(context, status);
+
+  if (status != NULL && status->status == OpenPublishStatusTypeError) {
+    return NULL;
+  }
+
+  openpublish_context_set_string(ctx, "post_publish_key", "post_publish_value",
+                                 status);
+
+  if (status != NULL && status->status == OpenPublishStatusTypeError) {
+    return NULL;
+  }
+
+  return ctx;
+}
+
+void rollback_post_publish_should_pass(const OpenPublishBasePublish *publish,
+                                       const OpenPublishContext *context,
+                                       OpenPublishStatus *status) {
+  openpublish_status_ok(status);
+  assert_non_null(publish);
+  assert_non_null(context);
+  assert_non_null(status);
+
+  openpublish_status_ok(status);
 }
 
 /*
@@ -120,7 +122,7 @@ void rollback_post_publish_should_pass(const CPublishBasePublish *publish,
   Checks
 */
 static void test_run_success(void **state) {
-  CPublishBasePublish publish = cpublish_publish_new_default();
+  OpenPublishBasePublish publish = openpublish_publish_new_default();
   publish.pre_publish_fn = pre_publish_should_pass;
   publish.rollback_pre_publish_fn = rollback_pre_publish_should_pass;
   publish.publish_fn = publish_should_pass;
@@ -128,42 +130,43 @@ static void test_run_success(void **state) {
   publish.post_publish_fn = post_publish_should_pass;
   publish.rollback_post_publish_fn = rollback_post_publish_should_pass;
 
-  CPublishStatus status;
+  OpenPublishStatus status;
 
-  CPublishContext *context = cpublish_run(&publish, &status);
+  OpenPublishContext *context = openpublish_run(&publish, &status);
   validate_status_ok(&status);
   assert_non_null(context);
 
-  const CPublishValue *pre_publish_value =
-      cpublish_context_get(context, "pre_publish_key", &status);
+  const OpenPublishValue *pre_publish_value =
+      openpublish_context_get(context, "pre_publish_key", &status);
   validate_status_ok(&status);
   assert_non_null(pre_publish_value);
-  CPublishString pre_publish_result =
-      cpublish_value_string(pre_publish_value, &status);
+  OpenPublishString pre_publish_result =
+      openpublish_value_string(pre_publish_value, &status);
   validate_status_ok(&status);
   assert_string_equal(pre_publish_result.string, "pre_publish_value");
-  cpublish_string_destroy(&pre_publish_result);
+  openpublish_string_destroy(&pre_publish_result);
 
-  const CPublishValue *publish_value =
-      cpublish_context_get(context, "publish_key", &status);
+  const OpenPublishValue *publish_value =
+      openpublish_context_get(context, "publish_key", &status);
   validate_status_ok(&status);
   assert_non_null(publish_value);
-  CPublishString publish_result = cpublish_value_string(publish_value, &status);
+  OpenPublishString publish_result =
+      openpublish_value_string(publish_value, &status);
   validate_status_ok(&status);
   assert_string_equal(publish_result.string, "publish_value");
-  cpublish_string_destroy(&publish_result);
+  openpublish_string_destroy(&publish_result);
 
-  const CPublishValue *post_publish_value =
-      cpublish_context_get(context, "post_publish_key", &status);
+  const OpenPublishValue *post_publish_value =
+      openpublish_context_get(context, "post_publish_key", &status);
   validate_status_ok(&status);
   assert_non_null(post_publish_value);
-  CPublishString post_publish_result =
-      cpublish_value_string(post_publish_value, &status);
+  OpenPublishString post_publish_result =
+      openpublish_value_string(post_publish_value, &status);
   validate_status_ok(&status);
   assert_string_equal(post_publish_result.string, "post_publish_value");
-  cpublish_string_destroy(&post_publish_result);
+  openpublish_string_destroy(&post_publish_result);
 
-  cpublish_context_destroy(context);
+  openpublish_context_destroy(context);
 }
 
 int main(void) {

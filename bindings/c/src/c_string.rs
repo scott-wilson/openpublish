@@ -3,25 +3,25 @@ use std::{
     ptr::null_mut,
 };
 
-/// The CPublishString contains an owned pointer to a C style string.
+/// The OpenPublishString contains an owned pointer to a C style string.
 ///
 /// # Safety
 ///
-/// The pointer to the string must be destroyed with `cpublish_string_destroy`
+/// The pointer to the string must be destroyed with `openpublish_string_destroy`
 /// once it is no longer needed. Also, the pointer must not be modified at all
 /// by any functions not exposed by the validation library.
 ///
-/// Internally, if a CPublishString is created, the system will create a copy of
+/// Internally, if a OpenPublishString is created, the system will create a copy of
 /// the string being pointed to.
 #[repr(C)]
 #[derive(Debug)]
-pub struct CPublishString {
+pub struct OpenPublishString {
     /// The owned pointer to a string.
     ///
     /// # Safety
     ///
     /// This should not be modified at all outside of the validation library.
-    /// Also, it should only be destroyed with `cpublish_string_destroy`.
+    /// Also, it should only be destroyed with `openpublish_string_destroy`.
     pub string: *mut c_char,
     /// Destroy the owned data.
     ///
@@ -33,15 +33,15 @@ pub struct CPublishString {
     pub destroy_fn: unsafe extern "C" fn(*mut Self) -> (),
 }
 
-impl Drop for CPublishString {
+impl Drop for OpenPublishString {
     fn drop(&mut self) {
         unsafe { (self.destroy_fn)(self) }
     }
 }
 
-impl CPublishString {
+impl OpenPublishString {
     pub(crate) fn new<T: AsRef<str>>(text: T) -> Self {
-        unsafe extern "C" fn destroy_fn(string: *mut CPublishString) {
+        unsafe extern "C" fn destroy_fn(string: *mut OpenPublishString) {
             if !(*string).string.is_null() {
                 unsafe { drop(CString::from_raw((*string).string)) };
             }
@@ -65,18 +65,18 @@ impl CPublishString {
 /// double free). Once the destroy function is called, all pointers to the
 /// string are invalid.
 #[no_mangle]
-pub unsafe extern "C" fn cpublish_string_destroy(string: *mut CPublishString) {
+pub unsafe extern "C" fn openpublish_string_destroy(string: *mut OpenPublishString) {
     unsafe { string.drop_in_place() }
 }
 
-/// The CPublishStringView creates a borrowed pointer to a C style string.
+/// The OpenPublishStringView creates a borrowed pointer to a C style string.
 ///
 /// # Safety
 ///
 /// The pointer must not outlive the container that owns the string. Also, the
 /// pointer should not be null, but that is not a strict requirement.
 #[repr(C)]
-pub struct CPublishStringView {
+pub struct OpenPublishStringView {
     /// The borrowed pointer to a string.
     ///
     /// # Safety

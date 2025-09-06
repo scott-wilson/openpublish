@@ -19,9 +19,9 @@ pub trait Publish {
     /// database entry, etc.
     async fn pre_publish<'a>(
         &self,
-        context: &'a crate::Context,
-    ) -> Result<std::borrow::Cow<'a, crate::Context>, crate::Error> {
-        Ok(std::borrow::Cow::Borrowed(context))
+        #[allow(unused_variables)] context: &'a crate::Context,
+    ) -> Result<Option<crate::Context>, crate::Error> {
+        Ok(None)
     }
 
     async fn rollback_pre_publish(&self, _context: &crate::Context) -> Result<(), crate::Error> {
@@ -37,7 +37,7 @@ pub trait Publish {
     async fn publish<'a>(
         &self,
         context: &'a crate::Context,
-    ) -> Result<std::borrow::Cow<'a, crate::Context>, crate::Error>;
+    ) -> Result<Option<crate::Context>, crate::Error>;
 
     async fn rollback_publish(&self, _context: &crate::Context) -> Result<(), crate::Error> {
         Ok(())
@@ -51,9 +51,9 @@ pub trait Publish {
     /// database entry.
     async fn post_publish<'a>(
         &self,
-        context: &'a crate::Context,
-    ) -> Result<std::borrow::Cow<'a, crate::Context>, crate::Error> {
-        Ok(std::borrow::Cow::Borrowed(context))
+        #[allow(unused_variables)] context: &'a crate::Context,
+    ) -> Result<Option<crate::Context>, crate::Error> {
+        Ok(None)
     }
 
     async fn rollback_post_publish(&self, _context: &crate::Context) -> Result<(), crate::Error> {

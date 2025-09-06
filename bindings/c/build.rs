@@ -10,5 +10,5 @@ fn main() {
         .with_config(config)
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file("include/cpublish.h");
+        .write_to_file("include/copenpublish.h");
 }

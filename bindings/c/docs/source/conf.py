@@ -61,5 +61,5 @@ myst_enable_extensions = [
 
 # -- Breathe -----------------------------------------------------------------
 
-breathe_projects = {"cpublish": "_doxygen/xml"}
-breathe_default_project = "cpublish"
+breathe_projects = {"copenpublish": "_doxygen/xml"}
+breathe_default_project = "copenpublish"

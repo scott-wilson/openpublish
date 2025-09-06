@@ -49,7 +49,7 @@ jobs:
       - name: Run Cargo Fmt
         run: cargo fmt --check
       - name: Run Cargo Deny
-        uses: EmbarkStudios/cargo-deny-action@v1
+        uses: EmbarkStudios/cargo-deny-action@v2
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Generate coverage report from Rust tests
         run: cargo llvm-cov --all-features --lcov --output-path lcov.info
@@ -59,7 +59,7 @@ jobs:
         working-directory: bindings/c/build
         run: |
           # Make cmocka a static dependency when testing.
-          cmake ../ -DBUILD_SHARED_LIBS=OFF -DBUILD_CPUBLISH_TESTS=ON ${{ matrix.cmake_flags }}
+          cmake ../ -DBUILD_SHARED_LIBS=OFF -DBUILD_COPENPUBLISH_TESTS=ON ${{ matrix.cmake_flags }}
       - name: CMake Build
         working-directory: bindings/c/build
         run: |

@@ -5,39 +5,42 @@ mod runner;
 mod status;
 mod value;
 
-pub use c_string::{cpublish_string_destroy, CPublishString, CPublishStringView};
+pub use c_string::{openpublish_string_destroy, OpenPublishString, OpenPublishStringView};
 pub use context::{
-    cpublish_context_clone, cpublish_context_destroy, cpublish_context_get,
-    cpublish_context_is_empty, cpublish_context_iter, cpublish_context_iter_destroy,
-    cpublish_context_iter_is_done, cpublish_context_iter_key, cpublish_context_iter_next,
-    cpublish_context_iter_value, cpublish_context_len, cpublish_context_new, cpublish_context_set,
-    cpublish_context_set_bool, cpublish_context_set_float, cpublish_context_set_int,
-    cpublish_context_set_none, cpublish_context_set_string, CPublishContext, CPublishContextIter,
+    openpublish_context_clone, openpublish_context_destroy, openpublish_context_get,
+    openpublish_context_is_empty, openpublish_context_iter, openpublish_context_iter_destroy,
+    openpublish_context_iter_is_done, openpublish_context_iter_key, openpublish_context_iter_next,
+    openpublish_context_iter_value, openpublish_context_len, openpublish_context_new,
+    openpublish_context_set, openpublish_context_set_bool, openpublish_context_set_float,
+    openpublish_context_set_int, openpublish_context_set_none, openpublish_context_set_string,
+    OpenPublishContext, OpenPublishContextIter,
 };
 pub use publish::{
-    cpublish_publish_default_error_publish, cpublish_publish_default_publish,
-    cpublish_publish_default_rollback_publish, cpublish_publish_new_default,
-    cpublish_publish_post_publish, cpublish_publish_pre_publish, cpublish_publish_publish,
-    cpublish_publish_rollback_post_publish, cpublish_publish_rollback_pre_publish,
-    cpublish_publish_rollback_publish, CPublishBasePublish,
+    openpublish_publish_default_error_publish, openpublish_publish_default_publish,
+    openpublish_publish_default_rollback_publish, openpublish_publish_new_default,
+    openpublish_publish_post_publish, openpublish_publish_pre_publish, openpublish_publish_publish,
+    openpublish_publish_rollback_post_publish, openpublish_publish_rollback_pre_publish,
+    openpublish_publish_rollback_publish, OpenPublishBasePublish,
 };
-pub use runner::cpublish_run;
+pub use runner::openpublish_run;
 pub use status::{
-    cpublish_status_destroy, cpublish_status_error, cpublish_status_ok, CPublishStatus,
-    CPublishStatusType,
+    openpublish_status_destroy, openpublish_status_error, openpublish_status_ok, OpenPublishStatus,
+    OpenPublishStatusType,
 };
 pub use value::{
-    cpublish_value_array_get, cpublish_value_array_iter, cpublish_value_array_len,
-    cpublish_value_array_push, cpublish_value_bool, cpublish_value_destroy, cpublish_value_float,
-    cpublish_value_int, cpublish_value_iter_array_destroy, cpublish_value_iter_array_is_done,
-    cpublish_value_iter_array_next, cpublish_value_iter_array_value,
-    cpublish_value_iter_object_destroy, cpublish_value_iter_object_is_done,
-    cpublish_value_iter_object_key, cpublish_value_iter_object_next,
-    cpublish_value_iter_object_value, cpublish_value_new_array,
-    cpublish_value_new_array_with_capacity, cpublish_value_new_bool, cpublish_value_new_float,
-    cpublish_value_new_int, cpublish_value_new_none, cpublish_value_new_object,
-    cpublish_value_new_object_with_capacity, cpublish_value_new_string, cpublish_value_object_get,
-    cpublish_value_object_insert, cpublish_value_object_iter, cpublish_value_object_len,
-    cpublish_value_string, cpublish_value_type, CPublishValue, CPublishValueIterArray,
-    CPublishValueIterObject, CPublishValueType,
+    openpublish_value_array_get, openpublish_value_array_iter, openpublish_value_array_len,
+    openpublish_value_array_push, openpublish_value_bool, openpublish_value_clone,
+    openpublish_value_destroy, openpublish_value_eq, openpublish_value_float,
+    openpublish_value_int, openpublish_value_iter_array_destroy,
+    openpublish_value_iter_array_is_done, openpublish_value_iter_array_next,
+    openpublish_value_iter_array_value, openpublish_value_iter_object_destroy,
+    openpublish_value_iter_object_is_done, openpublish_value_iter_object_key,
+    openpublish_value_iter_object_next, openpublish_value_iter_object_value,
+    openpublish_value_new_array, openpublish_value_new_array_with_capacity,
+    openpublish_value_new_bool, openpublish_value_new_float, openpublish_value_new_int,
+    openpublish_value_new_none, openpublish_value_new_object,
+    openpublish_value_new_object_with_capacity, openpublish_value_new_string,
+    openpublish_value_object_get, openpublish_value_object_insert, openpublish_value_object_iter,
+    openpublish_value_object_len, openpublish_value_string, openpublish_value_type,
+    OpenPublishValue, OpenPublishValueIterArray, OpenPublishValueIterObject, OpenPublishValueType,
 };
