@@ -3,6 +3,7 @@ use std::{
     ffi::{c_char, CStr, CString},
     ptr::{null, null_mut},
 };
+
 pub struct OpenPublishContext {
     pub inner: base_openpublish::Context,
 }

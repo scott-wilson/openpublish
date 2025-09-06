@@ -1,16 +1,6 @@
-// #include <cmath>
-// #include <limits>
-// #include <string>
-// #include <vector>
-// #include <map>
 #include <optional>
 #include <string>
 #include <utility>
-
-// extern "C"
-// {
-// #include <copenpublish.h>
-// }
 
 #include <gtest/gtest.h>
 
@@ -194,19 +184,21 @@ TEST_P(CheckParameterizedTestFixture, RunCheck) {
       CPPOPENPUBLISH_NAMESPACE::run(publish, status);
 
   if (should_fail) {
-    EXPECT_TRUE(status.is_error());
+    EXPECT_TRUE(status.is_error()) << status.message();
   } else {
-    EXPECT_TRUE(status.is_ok());
+    EXPECT_TRUE(status.is_ok()) << status.message();
   }
 
   if (pre_publish_context.has_value()) {
-    EXPECT_EQ(context.get(pre_publish_context.value().first, status),
-              CPPOPENPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
+    EXPECT_EQ(
+        context.get(pre_publish_context.value().first, status),
+        CPPOPENPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
     EXPECT_TRUE(status.is_ok());
   }
   if (pre_publish_context.has_value()) {
-    EXPECT_EQ(context.get(pre_publish_context.value().first, status),
-              CPPOPENPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
+    EXPECT_EQ(
+        context.get(pre_publish_context.value().first, status),
+        CPPOPENPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
     EXPECT_TRUE(status.is_ok());
   }
 }
