@@ -5,22 +5,22 @@
 #include <vector>
 
 extern "C" {
-#include <cpublish.h>
+#include <copenpublish.h>
 }
 
 #include <gtest/gtest.h>
 
-#include "cpppublish/status.h"
-#include "cpppublish/value.h"
-#include "cpppublish/value_iter.h"
+#include "openpublish/status.h"
+#include "openpublish/value.h"
+#include "openpublish/value_iter.h"
 
 #include "test_utils.h"
 
 TEST(Value, NewNoneSuccess) {
-  CPPPUBLISH_NAMESPACE::Value value;
-  CPPPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Value value;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  ASSERT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::None);
+  ASSERT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::None);
   validate_status_ok(status);
 }
 
@@ -28,10 +28,10 @@ class BoolParameterizedTestFixture : public ::testing::TestWithParam<bool> {};
 
 TEST_P(BoolParameterizedTestFixture, NewBoolSuccess) {
   bool v = GetParam();
-  CPPPUBLISH_NAMESPACE::Value value(v);
-  CPPPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Value value(v);
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Boolean);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Boolean);
   validate_status_ok(status);
   bool result = value.value_bool(status);
   validate_status_ok(status);
@@ -46,10 +46,10 @@ class IntParameterizedTestFixture : public ::testing::TestWithParam<int64_t> {};
 
 TEST_P(IntParameterizedTestFixture, NewIntSuccess) {
   int64_t v = GetParam();
-  CPPPUBLISH_NAMESPACE::Value value(v);
-  CPPPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Value value(v);
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Integer);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Integer);
   validate_status_ok(status);
   int64_t result = value.value_int(status);
   validate_status_ok(status);
@@ -67,10 +67,10 @@ class FloatParameterizedTestFixture : public ::testing::TestWithParam<double> {
 
 TEST_P(FloatParameterizedTestFixture, NewFloatSuccess) {
   double v = GetParam();
-  CPPPUBLISH_NAMESPACE::Value value(v);
-  CPPPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Value value(v);
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Float);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Float);
   validate_status_ok(status);
   double result = value.value_float(status);
   validate_status_ok(status);
@@ -95,10 +95,10 @@ class StringParameterizedTestFixture
 
 TEST_P(StringParameterizedTestFixture, NewStringSuccess) {
   std::string v = GetParam();
-  CPPPUBLISH_NAMESPACE::Value value(v);
-  CPPPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Value value(v);
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::String);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::String);
   validate_status_ok(status);
   std::string result = value.value_string(status);
   validate_status_ok(status);
@@ -111,34 +111,35 @@ INSTANTIATE_TEST_SUITE_P(Value, StringParameterizedTestFixture,
 
 class ArrayParameterizedTestFixture
     : public ::testing::TestWithParam<
-          std::vector<CPPPUBLISH_NAMESPACE::Value>> {};
+          std::vector<CPPOPENPUBLISH_NAMESPACE::Value>> {};
 
 TEST_P(ArrayParameterizedTestFixture, NewArraySuccess) {
-  std::vector<CPPPUBLISH_NAMESPACE::Value> v = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
+  std::vector<CPPOPENPUBLISH_NAMESPACE::Value> v = GetParam();
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  CPPPUBLISH_NAMESPACE::Value value(v, status);
+  CPPOPENPUBLISH_NAMESPACE::Value value(v, status);
   validate_status_ok(status);
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Array);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Array);
   validate_status_ok(status);
 
-  CPPPUBLISH_NAMESPACE::ValueIterArray iter = value.value_iter_array(status);
+  CPPOPENPUBLISH_NAMESPACE::ValueIterArray iter =
+      value.value_iter_array(status);
   validate_status_ok(status);
 
   size_t array_len = value.value_array_len(status);
   validate_status_ok(status);
 
   if (array_len == 1) {
-    CPPPUBLISH_NAMESPACE::ValueView v = value.value_array_get(0, status);
-    ASSERT_EQ(v.type(status), CPPPUBLISH_NAMESPACE::Value::Type::None);
+    CPPOPENPUBLISH_NAMESPACE::ValueView v = value.value_array_get(0, status);
+    ASSERT_EQ(v.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::None);
     validate_status_ok(status);
   } else {
     size_t i = 0;
 
     for (; !iter.is_done(status); iter.next(status)) {
       validate_status_ok(status);
-      CPPPUBLISH_NAMESPACE::ValueView v = iter.value(status);
+      CPPOPENPUBLISH_NAMESPACE::ValueView v = iter.value(status);
       validate_status_ok(status);
 
       int64_t result = v.value_int(status);
@@ -153,14 +154,14 @@ TEST_P(ArrayParameterizedTestFixture, NewArraySuccess) {
 }
 
 TEST_P(ArrayParameterizedTestFixture, PushArraySuccess) {
-  std::vector<CPPPUBLISH_NAMESPACE::Value> v = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
+  std::vector<CPPOPENPUBLISH_NAMESPACE::Value> v = GetParam();
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  CPPPUBLISH_NAMESPACE::Value value(std::vector<CPPPUBLISH_NAMESPACE::Value>{},
-                                    status);
+  CPPOPENPUBLISH_NAMESPACE::Value value(
+      std::vector<CPPOPENPUBLISH_NAMESPACE::Value>{}, status);
   validate_status_ok(status);
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Array);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Array);
   validate_status_ok(status);
 
   for (auto &&i : v) {
@@ -168,22 +169,23 @@ TEST_P(ArrayParameterizedTestFixture, PushArraySuccess) {
     validate_status_ok(status);
   }
 
-  CPPPUBLISH_NAMESPACE::ValueIterArray iter = value.value_iter_array(status);
+  CPPOPENPUBLISH_NAMESPACE::ValueIterArray iter =
+      value.value_iter_array(status);
   validate_status_ok(status);
 
   size_t array_len = value.value_array_len(status);
   validate_status_ok(status);
 
   if (array_len == 1) {
-    CPPPUBLISH_NAMESPACE::ValueView v = value.value_array_get(0, status);
-    ASSERT_EQ(v.type(status), CPPPUBLISH_NAMESPACE::Value::Type::None);
+    CPPOPENPUBLISH_NAMESPACE::ValueView v = value.value_array_get(0, status);
+    ASSERT_EQ(v.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::None);
     validate_status_ok(status);
   } else {
     size_t i = 0;
 
     for (; !iter.is_done(status); iter.next(status)) {
       validate_status_ok(status);
-      CPPPUBLISH_NAMESPACE::ValueView v = iter.value(status);
+      CPPOPENPUBLISH_NAMESPACE::ValueView v = iter.value(status);
       validate_status_ok(status);
 
       int64_t result = v.value_int(status);
@@ -199,37 +201,39 @@ TEST_P(ArrayParameterizedTestFixture, PushArraySuccess) {
 
 INSTANTIATE_TEST_SUITE_P(
     Value, ArrayParameterizedTestFixture,
-    ::testing::Values(std::vector<CPPPUBLISH_NAMESPACE::Value>{},
-                      std::vector<CPPPUBLISH_NAMESPACE::Value>{
-                          CPPPUBLISH_NAMESPACE::Value()},
-                      std::vector<CPPPUBLISH_NAMESPACE::Value>{
-                          CPPPUBLISH_NAMESPACE::Value((int64_t)0),
-                          CPPPUBLISH_NAMESPACE::Value((int64_t)1),
-                          CPPPUBLISH_NAMESPACE::Value((int64_t)2)}));
+    ::testing::Values(std::vector<CPPOPENPUBLISH_NAMESPACE::Value>{},
+                      std::vector<CPPOPENPUBLISH_NAMESPACE::Value>{
+                          CPPOPENPUBLISH_NAMESPACE::Value()},
+                      std::vector<CPPOPENPUBLISH_NAMESPACE::Value>{
+                          CPPOPENPUBLISH_NAMESPACE::Value((int64_t)0),
+                          CPPOPENPUBLISH_NAMESPACE::Value((int64_t)1),
+                          CPPOPENPUBLISH_NAMESPACE::Value((int64_t)2)}));
 
 class ObjectParameterizedTestFixture
     : public ::testing::TestWithParam<
-          std::map<std::string, CPPPUBLISH_NAMESPACE::Value>> {};
+          std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>> {};
 
 TEST_P(ObjectParameterizedTestFixture, NewObjectSuccess) {
-  std::map<std::string, CPPPUBLISH_NAMESPACE::Value> v = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
+  std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value> v = GetParam();
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  CPPPUBLISH_NAMESPACE::Value value(v, status);
+  CPPOPENPUBLISH_NAMESPACE::Value value(v, status);
   validate_status_ok(status);
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Object);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Object);
   validate_status_ok(status);
 
-  CPPPUBLISH_NAMESPACE::ValueIterObject iter = value.value_iter_object(status);
+  CPPOPENPUBLISH_NAMESPACE::ValueIterObject iter =
+      value.value_iter_object(status);
   validate_status_ok(status);
 
   size_t object_len = value.value_object_len(status);
   validate_status_ok(status);
 
   if (object_len == 1) {
-    CPPPUBLISH_NAMESPACE::ValueView v = value.value_object_get("test", status);
-    EXPECT_EQ(v.type(status), CPPPUBLISH_NAMESPACE::Value::Type::None);
+    CPPOPENPUBLISH_NAMESPACE::ValueView v =
+        value.value_object_get("test", status);
+    EXPECT_EQ(v.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::None);
     validate_status_ok(status);
   } else {
     size_t i = 0;
@@ -238,7 +242,7 @@ TEST_P(ObjectParameterizedTestFixture, NewObjectSuccess) {
       validate_status_ok(status);
       std::string_view k = iter.key(status);
       validate_status_ok(status);
-      CPPPUBLISH_NAMESPACE::ValueView v = iter.value(status);
+      CPPOPENPUBLISH_NAMESPACE::ValueView v = iter.value(status);
       validate_status_ok(status);
 
       int64_t result = v.value_int(status);
@@ -253,11 +257,11 @@ TEST_P(ObjectParameterizedTestFixture, NewObjectSuccess) {
 }
 
 TEST_P(ObjectParameterizedTestFixture, InsertObjectSuccess) {
-  std::map<std::string, CPPPUBLISH_NAMESPACE::Value> v = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
+  std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value> v = GetParam();
+  CPPOPENPUBLISH_NAMESPACE::Status status;
 
-  CPPPUBLISH_NAMESPACE::Value value(
-      std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{}, status);
+  CPPOPENPUBLISH_NAMESPACE::Value value(
+      std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{}, status);
   validate_status_ok(status);
 
   for (auto &&i : v) {
@@ -265,18 +269,20 @@ TEST_P(ObjectParameterizedTestFixture, InsertObjectSuccess) {
     validate_status_ok(status);
   }
 
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::Type::Object);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::Object);
   validate_status_ok(status);
 
-  CPPPUBLISH_NAMESPACE::ValueIterObject iter = value.value_iter_object(status);
+  CPPOPENPUBLISH_NAMESPACE::ValueIterObject iter =
+      value.value_iter_object(status);
   validate_status_ok(status);
 
   size_t object_len = value.value_object_len(status);
   validate_status_ok(status);
 
   if (object_len == 1) {
-    CPPPUBLISH_NAMESPACE::ValueView v = value.value_object_get("test", status);
-    EXPECT_EQ(v.type(status), CPPPUBLISH_NAMESPACE::Value::Type::None);
+    CPPOPENPUBLISH_NAMESPACE::ValueView v =
+        value.value_object_get("test", status);
+    EXPECT_EQ(v.type(status), CPPOPENPUBLISH_NAMESPACE::Value::Type::None);
     validate_status_ok(status);
   } else {
     size_t i = 0;
@@ -285,7 +291,7 @@ TEST_P(ObjectParameterizedTestFixture, InsertObjectSuccess) {
       validate_status_ok(status);
       std::string_view k = iter.key(status);
       validate_status_ok(status);
-      CPPPUBLISH_NAMESPACE::ValueView v = iter.value(status);
+      CPPOPENPUBLISH_NAMESPACE::ValueView v = iter.value(status);
       validate_status_ok(status);
 
       int64_t result = v.value_int(status);
@@ -301,10 +307,10 @@ TEST_P(ObjectParameterizedTestFixture, InsertObjectSuccess) {
 
 INSTANTIATE_TEST_SUITE_P(
     Value, ObjectParameterizedTestFixture,
-    ::testing::Values(std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{},
-                      std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{
-                          {"test", CPPPUBLISH_NAMESPACE::Value()}},
-                      std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{
-                          {"0", CPPPUBLISH_NAMESPACE::Value((int64_t)0)},
-                          {"1", CPPPUBLISH_NAMESPACE::Value((int64_t)1)},
-                          {"2", CPPPUBLISH_NAMESPACE::Value((int64_t)2)}}));
+    ::testing::Values(std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{},
+                      std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{
+                          {"test", CPPOPENPUBLISH_NAMESPACE::Value()}},
+                      std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{
+                          {"0", CPPOPENPUBLISH_NAMESPACE::Value((int64_t)0)},
+                          {"1", CPPOPENPUBLISH_NAMESPACE::Value((int64_t)1)},
+                          {"2", CPPOPENPUBLISH_NAMESPACE::Value((int64_t)2)}}));

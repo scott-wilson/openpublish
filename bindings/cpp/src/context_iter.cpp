@@ -1,22 +1,22 @@
-#include "cpppublish/context_iter.h"
+#include "openpublish/context_iter.h"
 
-namespace CPPPUBLISH_NAMESPACE {
-ContextIter::ContextIter(const CPPPUBLISH_NAMESPACE::Context &context,
-                         CPPPUBLISH_NAMESPACE::Status &status) {
-  _iter = cpublish_context_iter((const CPublishContext *)&context,
-                                (CPublishStatus *)&status);
+namespace CPPOPENPUBLISH_NAMESPACE {
+ContextIter::ContextIter(const CPPOPENPUBLISH_NAMESPACE::Context &context,
+                         CPPOPENPUBLISH_NAMESPACE::Status &status) {
+  _iter = openpublish_context_iter((const OpenPublishContext *)&context,
+                                (OpenPublishStatus *)&status);
 }
-ContextIter::~ContextIter() { cpublish_context_iter_destroy(_iter); }
+ContextIter::~ContextIter() { openpublish_context_iter_destroy(_iter); }
 
-bool ContextIter::is_done(CPPPUBLISH_NAMESPACE::Status &status) const {
-  return cpublish_context_iter_is_done(_iter, (CPublishStatus *)&status);
-}
-
-void ContextIter::next(CPPPUBLISH_NAMESPACE::Status &status) {
-  cpublish_context_iter_next(_iter, (CPublishStatus *)&status);
+bool ContextIter::is_done(CPPOPENPUBLISH_NAMESPACE::Status &status) const {
+  return openpublish_context_iter_is_done(_iter, (OpenPublishStatus *)&status);
 }
 
-const ValueView ContextIter::value(CPPPUBLISH_NAMESPACE::Status &status) const {
-  return cpublish_context_iter_value(_iter, (CPublishStatus *)&status);
+void ContextIter::next(CPPOPENPUBLISH_NAMESPACE::Status &status) {
+  openpublish_context_iter_next(_iter, (OpenPublishStatus *)&status);
 }
-} // namespace CPPPUBLISH_NAMESPACE
+
+const ValueView ContextIter::value(CPPOPENPUBLISH_NAMESPACE::Status &status) const {
+  return openpublish_context_iter_value(_iter, (OpenPublishStatus *)&status);
+}
+} // namespace CPPOPENPUBLISH_NAMESPACE

@@ -1,46 +1,46 @@
-#include "cpppublish/status.h"
+#include "openpublish/status.h"
 
-namespace CPPPUBLISH_NAMESPACE {
-Status::Status() { cpublish_status_ok(this); }
+namespace CPPOPENPUBLISH_NAMESPACE {
+Status::Status() { openpublish_status_ok(this); }
 
-Status::Status(const CPublishStatus &status) {
-  if (status.status == CPublishStatusTypeOk) {
-    cpublish_status_ok(this);
+Status::Status(const OpenPublishStatus &status) {
+  if (status.status == OpenPublishStatusTypeOk) {
+    openpublish_status_ok(this);
   } else {
-    cpublish_status_error(this, status.message);
+    openpublish_status_error(this, status.message);
   }
 }
 
-Status::Status(const CPublishStatus *status) {
+Status::Status(const OpenPublishStatus *status) {
   if (status) {
-    if (status->status == CPublishStatusTypeOk) {
-      cpublish_status_ok(this);
+    if (status->status == OpenPublishStatusTypeOk) {
+      openpublish_status_ok(this);
     } else {
-      cpublish_status_error(this, status->message);
+      openpublish_status_error(this, status->message);
     }
   } else {
-    cpublish_status_error(this, "status is null");
+    openpublish_status_error(this, "status is null");
   }
 }
 
-Status::~Status() { cpublish_status_destroy(this); }
+Status::~Status() { openpublish_status_destroy(this); }
 
-bool Status::is_ok() const { return this->status == CPublishStatusTypeOk; }
+bool Status::is_ok() const { return this->status == OpenPublishStatusTypeOk; }
 
 bool Status::is_error() const {
-  return this->status == CPublishStatusTypeError;
+  return this->status == OpenPublishStatusTypeError;
 }
 
 const std::string_view Status::message() const {
-  return ((CPublishStatus *)this)->message;
+  return ((OpenPublishStatus *)this)->message;
 }
 
-void Status::set_ok() { cpublish_status_ok(this); }
+void Status::set_ok() { openpublish_status_ok(this); }
 
 void Status::set_error(const std::string &message) {
-  cpublish_status_error(this, message.c_str());
+  openpublish_status_error(this, message.c_str());
 }
 void Status::set_error(const char *message) {
-  cpublish_status_error(this, message);
+  openpublish_status_error(this, message);
 }
-} // namespace CPPPUBLISH_NAMESPACE
+} // namespace CPPOPENPUBLISH_NAMESPACE

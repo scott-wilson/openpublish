@@ -2,9 +2,9 @@
 
 #include <gtest/gtest.h>
 
-#include "cpppublish/status.h"
+#include "openpublish/status.h"
 
-void _validate_status_ok(const CPPPUBLISH_NAMESPACE::Status &status,
+void _validate_status_ok(const CPPOPENPUBLISH_NAMESPACE::Status &status,
                          const char *const file, const int line) {
   if (status.is_error()) {
     std::cerr << "file: " << file << ":" << line << std::endl;

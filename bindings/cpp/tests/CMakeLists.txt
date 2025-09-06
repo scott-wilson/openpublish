@@ -26,7 +26,7 @@ foreach(TEST ${TESTS})
     target_link_libraries(${TEST}
         PUBLIC
         gtest_main
-        cpppublish
+        openpublish
     )
     add_test(NAME ${TEST} COMMAND ${TEST})
 endforeach()

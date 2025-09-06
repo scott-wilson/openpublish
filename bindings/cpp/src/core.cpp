@@ -1,9 +1,9 @@
 extern "C" {
-#include <cpublish.h>
+#include <copenpublish.h>
 }
 
-#include "cpppublish/context.h"
-#include "cpppublish/publish.h"
-#include "cpppublish/runner.h"
-#include "cpppublish/status.h"
-#include "cpppublish/value.h"
+#include "openpublish/context.h"
+#include "openpublish/publish.h"
+#include "openpublish/runner.h"
+#include "openpublish/status.h"
+#include "openpublish/value.h"

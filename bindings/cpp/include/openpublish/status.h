@@ -1,20 +1,20 @@
 #pragma once
 
 extern "C" {
-#include <cpublish.h>
+#include <copenpublish.h>
 }
 
 #include <string>
 #include <string_view>
 
-namespace CPPPUBLISH_NAMESPACE {
-class Status : private CPublishStatus {
+namespace CPPOPENPUBLISH_NAMESPACE {
+class Status : private OpenPublishStatus {
 public:
   Status();
 
-  Status(const CPublishStatus &status);
+  Status(const OpenPublishStatus &status);
 
-  Status(const CPublishStatus *status);
+  Status(const OpenPublishStatus *status);
 
   ~Status();
 
@@ -30,4 +30,4 @@ public:
   void set_error(const char *message);
 };
 
-} // namespace CPPPUBLISH_NAMESPACE
+} // namespace CPPOPENPUBLISH_NAMESPACE

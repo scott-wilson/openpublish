@@ -9,22 +9,22 @@
 
 // extern "C"
 // {
-// #include <cpublish.h>
+// #include <copenpublish.h>
 // }
 
 #include <gtest/gtest.h>
 
-#include "cpppublish/context.h"
-#include "cpppublish/context_iter.h"
-#include "cpppublish/publish.h"
-#include "cpppublish/runner.h"
-#include "cpppublish/status.h"
-#include "cpppublish/value.h"
-#include "cpppublish/value_iter.h"
+#include "openpublish/context.h"
+#include "openpublish/context_iter.h"
+#include "openpublish/publish.h"
+#include "openpublish/runner.h"
+#include "openpublish/status.h"
+#include "openpublish/value.h"
+#include "openpublish/value_iter.h"
 
 #include "test_utils.h"
 
-class Publish : public CPPPUBLISH_NAMESPACE::BasePublish {
+class Publish : public CPPOPENPUBLISH_NAMESPACE::BasePublish {
 public:
   Publish(std::optional<std::pair<std::string, bool>> pre_publish_context,
           std::optional<std::string> pre_publish_status,
@@ -44,10 +44,10 @@ public:
         post_publish_status(post_publish_status),
         rollback_post_publish_status(rollback_post_publish_status) {}
 
-  virtual std::optional<CPPPUBLISH_NAMESPACE::Context>
-  pre_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-              CPPPUBLISH_NAMESPACE::Status &status) {
-    std::optional<CPPPUBLISH_NAMESPACE::Context> ctx;
+  virtual std::optional<CPPOPENPUBLISH_NAMESPACE::Context>
+  pre_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+              CPPOPENPUBLISH_NAMESPACE::Status &status) {
+    std::optional<CPPOPENPUBLISH_NAMESPACE::Context> ctx;
 
     if (pre_publish_context.has_value()) {
       ctx = context.clone(status);
@@ -67,8 +67,8 @@ public:
   }
 
   virtual void
-  rollback_pre_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-                       CPPPUBLISH_NAMESPACE::Status &status) {
+  rollback_pre_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+                       CPPOPENPUBLISH_NAMESPACE::Status &status) {
     if (rollback_pre_publish_status.has_value()) {
       status.set_error(rollback_pre_publish_status.value());
     } else {
@@ -76,10 +76,10 @@ public:
     }
   }
 
-  virtual std::optional<CPPPUBLISH_NAMESPACE::Context>
-  publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-          CPPPUBLISH_NAMESPACE::Status &status) {
-    std::optional<CPPPUBLISH_NAMESPACE::Context> ctx;
+  virtual std::optional<CPPOPENPUBLISH_NAMESPACE::Context>
+  publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+          CPPOPENPUBLISH_NAMESPACE::Status &status) {
+    std::optional<CPPOPENPUBLISH_NAMESPACE::Context> ctx;
 
     if (publish_context.has_value()) {
       ctx = context.clone(status);
@@ -99,8 +99,8 @@ public:
   }
 
   virtual void
-  rollback_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-                   CPPPUBLISH_NAMESPACE::Status &status) {
+  rollback_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+                   CPPOPENPUBLISH_NAMESPACE::Status &status) {
     if (rollback_publish_status.has_value()) {
       status.set_error(rollback_publish_status.value());
     } else {
@@ -108,10 +108,10 @@ public:
     }
   }
 
-  virtual std::optional<CPPPUBLISH_NAMESPACE::Context>
-  post_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-               CPPPUBLISH_NAMESPACE::Status &status) {
-    std::optional<CPPPUBLISH_NAMESPACE::Context> ctx;
+  virtual std::optional<CPPOPENPUBLISH_NAMESPACE::Context>
+  post_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+               CPPOPENPUBLISH_NAMESPACE::Status &status) {
+    std::optional<CPPOPENPUBLISH_NAMESPACE::Context> ctx;
 
     if (post_publish_context.has_value()) {
       ctx = context.clone(status);
@@ -131,8 +131,8 @@ public:
   }
 
   virtual void
-  rollback_post_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-                        CPPPUBLISH_NAMESPACE::Status &status) {
+  rollback_post_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+                        CPPOPENPUBLISH_NAMESPACE::Status &status) {
     if (rollback_post_publish_status.has_value()) {
       status.set_error(rollback_post_publish_status.value());
     } else {
@@ -189,9 +189,9 @@ TEST_P(CheckParameterizedTestFixture, RunCheck) {
       publish_context,      publish_status,      rollback_publish_status,
       post_publish_context, post_publish_status, rollback_post_publish_status};
 
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context =
-      CPPPUBLISH_NAMESPACE::run(publish, status);
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context =
+      CPPOPENPUBLISH_NAMESPACE::run(publish, status);
 
   if (should_fail) {
     EXPECT_TRUE(status.is_error());
@@ -201,12 +201,12 @@ TEST_P(CheckParameterizedTestFixture, RunCheck) {
 
   if (pre_publish_context.has_value()) {
     EXPECT_EQ(context.get(pre_publish_context.value().first, status),
-              CPPPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
+              CPPOPENPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
     EXPECT_TRUE(status.is_ok());
   }
   if (pre_publish_context.has_value()) {
     EXPECT_EQ(context.get(pre_publish_context.value().first, status),
-              CPPPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
+              CPPOPENPUBLISH_NAMESPACE::Value(pre_publish_context.value().second));
     EXPECT_TRUE(status.is_ok());
   }
 }

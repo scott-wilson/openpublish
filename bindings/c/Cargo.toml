@@ -1,11 +1,11 @@
 [package]
-name = "cpublish"
+name = "copenpublish"
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [lib]
-name = "cpublish"
+name = "openpublish"
 crate-type = ["staticlib", "cdylib", "lib"]
 
 # [profile.release]
@@ -17,7 +17,7 @@ crate-type = ["staticlib", "cdylib", "lib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-publish = { path = "../../" }
+base_openpublish = { path = "../../", package = "openpublish" }
 bitflags = "2.9.3"
 libc = "0.2.175"
 async-trait = "0.1.89"

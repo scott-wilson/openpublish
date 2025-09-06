@@ -1,6 +1,6 @@
-#include "cpppublish/publish.h"
+#include "openpublish/publish.h"
 
-namespace CPPPUBLISH_NAMESPACE {
+namespace CPPOPENPUBLISH_NAMESPACE {
 BasePublish::BasePublish() {
   this->pre_publish_fn = pre_publish_impl;
   this->rollback_pre_publish_fn = rollback_pre_publish_impl;
@@ -12,46 +12,46 @@ BasePublish::BasePublish() {
 
 BasePublish::~BasePublish() {}
 
-std::optional<CPPPUBLISH_NAMESPACE::Context>
-BasePublish::pre_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-                         CPPPUBLISH_NAMESPACE::Status &status) {
+std::optional<CPPOPENPUBLISH_NAMESPACE::Context>
+BasePublish::pre_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+                         CPPOPENPUBLISH_NAMESPACE::Status &status) {
   status.set_ok();
   return std::nullopt;
 }
 
 void BasePublish::rollback_pre_publish(
-    const CPPPUBLISH_NAMESPACE::ContextView &context,
-    CPPPUBLISH_NAMESPACE::Status &status) {
+    const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+    CPPOPENPUBLISH_NAMESPACE::Status &status) {
   status.set_ok();
 }
 
 void BasePublish::rollback_publish(
-    const CPPPUBLISH_NAMESPACE::ContextView &context,
-    CPPPUBLISH_NAMESPACE::Status &status) {
+    const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+    CPPOPENPUBLISH_NAMESPACE::Status &status) {
   status.set_ok();
 }
 
-std::optional<CPPPUBLISH_NAMESPACE::Context>
-BasePublish::post_publish(const CPPPUBLISH_NAMESPACE::ContextView &context,
-                          CPPPUBLISH_NAMESPACE::Status &status) {
+std::optional<CPPOPENPUBLISH_NAMESPACE::Context>
+BasePublish::post_publish(const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+                          CPPOPENPUBLISH_NAMESPACE::Status &status) {
   status.set_ok();
   return std::nullopt;
 }
 
 void BasePublish::rollback_post_publish(
-    const CPPPUBLISH_NAMESPACE::ContextView &context,
-    CPPPUBLISH_NAMESPACE::Status &status) {
+    const CPPOPENPUBLISH_NAMESPACE::ContextView &context,
+    CPPOPENPUBLISH_NAMESPACE::Status &status) {
   status.set_ok();
 }
 
-CPublishContext *
-BasePublish::pre_publish_impl(const CPublishBasePublish *publish,
-                              const CPublishContext *context,
-                              CPublishStatus *status) {
-  CPPPUBLISH_NAMESPACE::Status *cpp_status =
-      (CPPPUBLISH_NAMESPACE::Status *)status;
-  std::optional<CPPPUBLISH_NAMESPACE::Context> cpp_out_context =
-      ((CPPPUBLISH_NAMESPACE::BasePublish *)publish)
+OpenPublishContext *
+BasePublish::pre_publish_impl(const OpenPublishBasePublish *publish,
+                              const OpenPublishContext *context,
+                              OpenPublishStatus *status) {
+  CPPOPENPUBLISH_NAMESPACE::Status *cpp_status =
+      (CPPOPENPUBLISH_NAMESPACE::Status *)status;
+  std::optional<CPPOPENPUBLISH_NAMESPACE::Context> cpp_out_context =
+      ((CPPOPENPUBLISH_NAMESPACE::BasePublish *)publish)
           ->pre_publish(context, *cpp_status);
 
   if (cpp_out_context) {
@@ -61,22 +61,22 @@ BasePublish::pre_publish_impl(const CPublishBasePublish *publish,
   }
 }
 
-void BasePublish::rollback_pre_publish_impl(const CPublishBasePublish *publish,
-                                            const CPublishContext *context,
-                                            CPublishStatus *status) {
-  CPPPUBLISH_NAMESPACE::Status *cpp_status =
-      (CPPPUBLISH_NAMESPACE::Status *)status;
-  ((CPPPUBLISH_NAMESPACE::BasePublish *)publish)
+void BasePublish::rollback_pre_publish_impl(const OpenPublishBasePublish *publish,
+                                            const OpenPublishContext *context,
+                                            OpenPublishStatus *status) {
+  CPPOPENPUBLISH_NAMESPACE::Status *cpp_status =
+      (CPPOPENPUBLISH_NAMESPACE::Status *)status;
+  ((CPPOPENPUBLISH_NAMESPACE::BasePublish *)publish)
       ->rollback_pre_publish(context, *cpp_status);
 }
 
-CPublishContext *BasePublish::publish_impl(const CPublishBasePublish *publish,
-                                           const CPublishContext *context,
-                                           CPublishStatus *status) {
-  CPPPUBLISH_NAMESPACE::Status *cpp_status =
-      (CPPPUBLISH_NAMESPACE::Status *)status;
-  std::optional<CPPPUBLISH_NAMESPACE::Context> cpp_out_context =
-      ((CPPPUBLISH_NAMESPACE::BasePublish *)publish)
+OpenPublishContext *BasePublish::publish_impl(const OpenPublishBasePublish *publish,
+                                           const OpenPublishContext *context,
+                                           OpenPublishStatus *status) {
+  CPPOPENPUBLISH_NAMESPACE::Status *cpp_status =
+      (CPPOPENPUBLISH_NAMESPACE::Status *)status;
+  std::optional<CPPOPENPUBLISH_NAMESPACE::Context> cpp_out_context =
+      ((CPPOPENPUBLISH_NAMESPACE::BasePublish *)publish)
           ->publish(context, *cpp_status);
 
   if (cpp_out_context) {
@@ -86,23 +86,23 @@ CPublishContext *BasePublish::publish_impl(const CPublishBasePublish *publish,
   }
 }
 
-void BasePublish::rollback_publish_impl(const CPublishBasePublish *publish,
-                                        const CPublishContext *context,
-                                        CPublishStatus *status) {
-  CPPPUBLISH_NAMESPACE::Status *cpp_status =
-      (CPPPUBLISH_NAMESPACE::Status *)status;
-  ((CPPPUBLISH_NAMESPACE::BasePublish *)publish)
+void BasePublish::rollback_publish_impl(const OpenPublishBasePublish *publish,
+                                        const OpenPublishContext *context,
+                                        OpenPublishStatus *status) {
+  CPPOPENPUBLISH_NAMESPACE::Status *cpp_status =
+      (CPPOPENPUBLISH_NAMESPACE::Status *)status;
+  ((CPPOPENPUBLISH_NAMESPACE::BasePublish *)publish)
       ->rollback_publish(context, *cpp_status);
 }
 
-CPublishContext *
-BasePublish::post_publish_impl(const CPublishBasePublish *publish,
-                               const CPublishContext *context,
-                               CPublishStatus *status) {
-  CPPPUBLISH_NAMESPACE::Status *cpp_status =
-      (CPPPUBLISH_NAMESPACE::Status *)status;
-  std::optional<CPPPUBLISH_NAMESPACE::Context> cpp_out_context =
-      ((CPPPUBLISH_NAMESPACE::BasePublish *)publish)
+OpenPublishContext *
+BasePublish::post_publish_impl(const OpenPublishBasePublish *publish,
+                               const OpenPublishContext *context,
+                               OpenPublishStatus *status) {
+  CPPOPENPUBLISH_NAMESPACE::Status *cpp_status =
+      (CPPOPENPUBLISH_NAMESPACE::Status *)status;
+  std::optional<CPPOPENPUBLISH_NAMESPACE::Context> cpp_out_context =
+      ((CPPOPENPUBLISH_NAMESPACE::BasePublish *)publish)
           ->post_publish(context, *cpp_status);
 
   if (cpp_out_context) {
@@ -112,12 +112,12 @@ BasePublish::post_publish_impl(const CPublishBasePublish *publish,
   }
 }
 
-void BasePublish::rollback_post_publish_impl(const CPublishBasePublish *publish,
-                                             const CPublishContext *context,
-                                             CPublishStatus *status) {
-  CPPPUBLISH_NAMESPACE::Status *cpp_status =
-      (CPPPUBLISH_NAMESPACE::Status *)status;
-  ((CPPPUBLISH_NAMESPACE::BasePublish *)publish)
+void BasePublish::rollback_post_publish_impl(const OpenPublishBasePublish *publish,
+                                             const OpenPublishContext *context,
+                                             OpenPublishStatus *status) {
+  CPPOPENPUBLISH_NAMESPACE::Status *cpp_status =
+      (CPPOPENPUBLISH_NAMESPACE::Status *)status;
+  ((CPPOPENPUBLISH_NAMESPACE::BasePublish *)publish)
       ->rollback_post_publish(context, *cpp_status);
 }
-} // namespace CPPPUBLISH_NAMESPACE
+} // namespace CPPOPENPUBLISH_NAMESPACE

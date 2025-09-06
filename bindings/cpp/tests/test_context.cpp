@@ -5,27 +5,27 @@
 #include <vector>
 
 extern "C" {
-#include <cpublish.h>
+#include <copenpublish.h>
 }
 
 #include <gtest/gtest.h>
 
-#include "cpppublish/context.h"
-#include "cpppublish/context_iter.h"
-#include "cpppublish/status.h"
-#include "cpppublish/value.h"
-#include "cpppublish/value_iter.h"
+#include "openpublish/context.h"
+#include "openpublish/context_iter.h"
+#include "openpublish/status.h"
+#include "openpublish/value.h"
+#include "openpublish/value_iter.h"
 
 #include "test_utils.h"
 
 class ContextValueParameterizedTestFixture
     : public ::testing::TestWithParam<
-          std::map<std::string, CPPPUBLISH_NAMESPACE::Value>> {};
+          std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>> {};
 
 TEST_P(ContextValueParameterizedTestFixture, InsertSuccess) {
-  std::map<std::string, CPPPUBLISH_NAMESPACE::Value> items = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value> items = GetParam();
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -37,7 +37,7 @@ TEST_P(ContextValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto input_type = item.second.type(status);
@@ -69,22 +69,22 @@ TEST_P(ContextValueParameterizedTestFixture, InsertSuccess) {
 
 INSTANTIATE_TEST_SUITE_P(
     Value, ContextValueParameterizedTestFixture,
-    ::testing::Values(std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{},
-                      std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{
-                          {"0", CPPPUBLISH_NAMESPACE::Value{(int64_t)0}}}));
+    ::testing::Values(std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{},
+                      std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{
+                          {"0", CPPOPENPUBLISH_NAMESPACE::Value{(int64_t)0}}}));
 
 TEST(Context, NewNoneValueSuccess) {
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   context.set("0", status);
   validate_status_ok(status);
   size_t len = context.len(status);
   validate_status_ok(status);
   EXPECT_EQ(len, 1);
 
-  CPPPUBLISH_NAMESPACE::ValueView value = context.get("0", status);
+  CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get("0", status);
   validate_status_ok(status);
-  EXPECT_EQ(value.type(status), CPPPUBLISH_NAMESPACE::Value::None);
+  EXPECT_EQ(value.type(status), CPPOPENPUBLISH_NAMESPACE::Value::None);
   validate_status_ok(status);
 }
 
@@ -93,8 +93,8 @@ class ContextBoolValueParameterizedTestFixture
 
 TEST_P(ContextBoolValueParameterizedTestFixture, InsertSuccess) {
   std::map<std::string, bool> items = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -106,13 +106,13 @@ TEST_P(ContextBoolValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto result_type = value.type(status);
     validate_status_ok(status);
 
-    EXPECT_EQ(result_type, CPPPUBLISH_NAMESPACE::Value::Boolean);
+    EXPECT_EQ(result_type, CPPOPENPUBLISH_NAMESPACE::Value::Boolean);
 
     auto input_value = item.second;
     auto result_value = value.value_bool(status);
@@ -145,8 +145,8 @@ class ContextIntValueParameterizedTestFixture
 
 TEST_P(ContextIntValueParameterizedTestFixture, InsertSuccess) {
   std::map<std::string, int64_t> items = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -158,13 +158,13 @@ TEST_P(ContextIntValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto result_type = value.type(status);
     validate_status_ok(status);
 
-    EXPECT_EQ(result_type, CPPPUBLISH_NAMESPACE::Value::Integer);
+    EXPECT_EQ(result_type, CPPOPENPUBLISH_NAMESPACE::Value::Integer);
 
     auto input_value = item.second;
     auto result_value = value.value_int(status);
@@ -197,8 +197,8 @@ class ContextFloatValueParameterizedTestFixture
 
 TEST_P(ContextFloatValueParameterizedTestFixture, InsertSuccess) {
   std::map<std::string, double> items = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -210,13 +210,13 @@ TEST_P(ContextFloatValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto result_type = value.type(status);
     validate_status_ok(status);
 
-    EXPECT_EQ(result_type, CPPPUBLISH_NAMESPACE::Value::Float);
+    EXPECT_EQ(result_type, CPPOPENPUBLISH_NAMESPACE::Value::Float);
 
     auto input_value = item.second;
     auto result_value = value.value_float(status);
@@ -250,8 +250,8 @@ class ContextStringValueParameterizedTestFixture
 
 TEST_P(ContextStringValueParameterizedTestFixture, InsertSuccess) {
   std::map<std::string, std::string> items = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -263,13 +263,13 @@ TEST_P(ContextStringValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto result_type = value.type(status);
     validate_status_ok(status);
 
-    EXPECT_EQ(result_type, CPPPUBLISH_NAMESPACE::Value::String);
+    EXPECT_EQ(result_type, CPPOPENPUBLISH_NAMESPACE::Value::String);
 
     auto input_value = item.second;
     auto result_value = value.value_string(status);
@@ -298,13 +298,13 @@ INSTANTIATE_TEST_SUITE_P(
 
 class ContextArrayValueParameterizedTestFixture
     : public ::testing::TestWithParam<
-          std::map<std::string, std::vector<CPPPUBLISH_NAMESPACE::Value>>> {};
+          std::map<std::string, std::vector<CPPOPENPUBLISH_NAMESPACE::Value>>> {};
 
 TEST_P(ContextArrayValueParameterizedTestFixture, InsertSuccess) {
-  std::map<std::string, std::vector<CPPPUBLISH_NAMESPACE::Value>> items =
+  std::map<std::string, std::vector<CPPOPENPUBLISH_NAMESPACE::Value>> items =
       GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -316,13 +316,13 @@ TEST_P(ContextArrayValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto result_type = value.type(status);
     validate_status_ok(status);
 
-    EXPECT_EQ(result_type, CPPPUBLISH_NAMESPACE::Value::Array);
+    EXPECT_EQ(result_type, CPPOPENPUBLISH_NAMESPACE::Value::Array);
 
     auto input_value = item.second;
 
@@ -343,19 +343,19 @@ TEST_P(ContextArrayValueParameterizedTestFixture, InsertSuccess) {
 INSTANTIATE_TEST_SUITE_P(
     Value, ContextArrayValueParameterizedTestFixture,
     ::testing::Values(
-        std::map<std::string, std::vector<CPPPUBLISH_NAMESPACE::Value>>{},
-        std::map<std::string, std::vector<CPPPUBLISH_NAMESPACE::Value>>{
-            {"", std::vector{CPPPUBLISH_NAMESPACE::Value()}}}));
+        std::map<std::string, std::vector<CPPOPENPUBLISH_NAMESPACE::Value>>{},
+        std::map<std::string, std::vector<CPPOPENPUBLISH_NAMESPACE::Value>>{
+            {"", std::vector{CPPOPENPUBLISH_NAMESPACE::Value()}}}));
 
 class ContextObjectValueParameterizedTestFixture
     : public ::testing::TestWithParam<std::map<
-          std::string, std::map<std::string, CPPPUBLISH_NAMESPACE::Value>>> {};
+          std::string, std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>>> {};
 
 TEST_P(ContextObjectValueParameterizedTestFixture, InsertSuccess) {
-  std::map<std::string, std::map<std::string, CPPPUBLISH_NAMESPACE::Value>>
+  std::map<std::string, std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>>
       items = GetParam();
-  CPPPUBLISH_NAMESPACE::Status status;
-  CPPPUBLISH_NAMESPACE::Context context;
+  CPPOPENPUBLISH_NAMESPACE::Status status;
+  CPPOPENPUBLISH_NAMESPACE::Context context;
   size_t expected_len = 0;
 
   for (auto &&item : items) {
@@ -367,13 +367,13 @@ TEST_P(ContextObjectValueParameterizedTestFixture, InsertSuccess) {
   size_t result_len = 0;
 
   for (auto &&item : items) {
-    CPPPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
+    CPPOPENPUBLISH_NAMESPACE::ValueView value = context.get(item.first, status);
     validate_status_ok(status);
 
     auto result_type = value.type(status);
     validate_status_ok(status);
 
-    EXPECT_EQ(result_type, CPPPUBLISH_NAMESPACE::Value::Object);
+    EXPECT_EQ(result_type, CPPOPENPUBLISH_NAMESPACE::Value::Object);
 
     auto input_value = item.second;
 
@@ -395,8 +395,8 @@ INSTANTIATE_TEST_SUITE_P(
     Value, ContextObjectValueParameterizedTestFixture,
     ::testing::Values(
         std::map<std::string,
-                 std::map<std::string, CPPPUBLISH_NAMESPACE::Value>>{},
+                 std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>>{},
         std::map<std::string,
-                 std::map<std::string, CPPPUBLISH_NAMESPACE::Value>>{
-            {"", std::map<std::string, CPPPUBLISH_NAMESPACE::Value>{
-                     {"test", CPPPUBLISH_NAMESPACE::Value()}}}}));
+                 std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>>{
+            {"", std::map<std::string, CPPOPENPUBLISH_NAMESPACE::Value>{
+                     {"test", CPPOPENPUBLISH_NAMESPACE::Value()}}}}));

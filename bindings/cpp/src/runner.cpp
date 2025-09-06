@@ -1,10 +1,10 @@
-#include "cpppublish/runner.h"
+#include "openpublish/runner.h"
 
-namespace CPPPUBLISH_NAMESPACE {
-const CPPPUBLISH_NAMESPACE::Context
-run(const CPPPUBLISH_NAMESPACE::BasePublish &publish,
-    CPPPUBLISH_NAMESPACE::Status &status) {
-  return cpublish_run((const CPublishBasePublish *)&publish,
-                      (CPublishStatus *)&status);
+namespace CPPOPENPUBLISH_NAMESPACE {
+const CPPOPENPUBLISH_NAMESPACE::Context
+run(const CPPOPENPUBLISH_NAMESPACE::BasePublish &publish,
+    CPPOPENPUBLISH_NAMESPACE::Status &status) {
+  return openpublish_run((const OpenPublishBasePublish *)&publish,
+                      (OpenPublishStatus *)&status);
 }
-} // namespace CPPPUBLISH_NAMESPACE
+} // namespace CPPOPENPUBLISH_NAMESPACE
