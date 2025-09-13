@@ -62,6 +62,7 @@ testpaths = ["tests/"]
 
 [tool.ruff]
 lint.select = ["ALL"]
+lint.ignore = ["COM812"]
 line-length = 88
 
 [tool.ruff.lint.per-file-ignores]
