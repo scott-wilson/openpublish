@@ -12,5 +12,5 @@ use runner::run;
 #[pymodule]
 pub mod openpublish {
     #[pymodule_export]
-    use super::{run, Context, ContextView, Publish};
+    use super::{Context, ContextView, Publish, run};
 }
