@@ -57,9 +57,15 @@ no_implicit_reexport = true
 # This one can be tricky to get passing if you use a lot of untyped libraries
 warn_return_any = true
 
+[tool.pytest.ini_options]
+testpaths = ["tests/"]
+
 [tool.ruff]
 lint.select = ["ALL"]
 line-length = 88
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/*" = ["INP001", "D100", "D103", "S101"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
