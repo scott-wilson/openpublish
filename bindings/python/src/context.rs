@@ -141,7 +141,7 @@ impl Context {
     }
 }
 
-#[pyclass]
+#[pyclass(frozen)]
 #[derive(Debug, Clone)]
 pub(crate) struct ContextView {
     pub(crate) inner: Context,

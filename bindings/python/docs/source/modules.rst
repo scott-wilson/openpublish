@@ -1,7 +1,7 @@
-pypublish
-=========
+openpublish
+===========
 
 .. toctree::
    :maxdepth: 4
 
-   pypublish
+   openpublish

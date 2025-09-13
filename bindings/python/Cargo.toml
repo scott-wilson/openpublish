@@ -1,15 +1,16 @@
 [package]
 name = "pyopenpublish"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "openpublish"
 crate-type = ["cdylib"]
+name = "openpublish"
 
 [dependencies]
-pyo3 = "0.25.1"
-base_openpublish = { path = "../../", package = "openpublish" }
-pyo3-async-runtimes = { version = "0.25.0", features = ["tokio-runtime"] }
 async-trait = "0.1.89"
+base_openpublish = { package = "openpublish", path = "../../" }
+pyo3 = "0.26.0"
+pyo3-async-runtimes = { version = "0.26.0", features = ["tokio-runtime"] }
+
