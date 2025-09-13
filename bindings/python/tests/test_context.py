@@ -26,7 +26,9 @@ if typing.TYPE_CHECKING:
         lambda children: strategies.one_of(
             strategies.lists(children, max_size=10),
             strategies.dictionaries(
-                strategies.text(max_size=10), children, max_size=10,
+                strategies.text(max_size=10),
+                children,
+                max_size=10,
             ),
         ),
         max_leaves=10,
@@ -54,7 +56,9 @@ def test_context_get_success(key: str, value: Value) -> None:
         lambda children: strategies.one_of(
             strategies.lists(children, max_size=10),
             strategies.dictionaries(
-                strategies.text(max_size=10), children, max_size=10,
+                strategies.text(max_size=10),
+                children,
+                max_size=10,
             ),
         ),
         max_leaves=10,
