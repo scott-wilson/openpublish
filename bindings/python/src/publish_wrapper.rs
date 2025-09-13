@@ -1,11 +1,11 @@
 use pyo3::{exceptions::PyTypeError, intern, prelude::*};
 
 pub(crate) struct PublishWrapper {
-    inner: PyObject,
+    inner: Py<PyAny>,
 }
 
 impl PublishWrapper {
-    pub(crate) fn new(inner: PyObject) -> Self {
+    pub(crate) fn new(inner: Py<PyAny>) -> Self {
         Self { inner }
     }
 }
@@ -18,7 +18,7 @@ impl base_openpublish::Publish for PublishWrapper {
     ) -> Result<Option<base_openpublish::Context>, base_openpublish::Error> {
         let context_view = crate::Context::from(context.clone()).to_view();
 
-        let result = Python::with_gil(|py| {
+        let result = Python::attach(|py| {
             self.inner
                 .call_method1(py, intern!(py, "pre_publish"), (context_view,))
         })
@@ -27,7 +27,7 @@ impl base_openpublish::Publish for PublishWrapper {
         })?;
 
         let result =
-            Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
+            Python::attach(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
                 .map_err(|err| {
                     base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
                 })?
@@ -36,7 +36,7 @@ impl base_openpublish::Publish for PublishWrapper {
                     base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
                 })?;
 
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             let obj = result.clone_ref(py);
             let obj_ref = obj.bind_borrowed(py);
 
@@ -62,7 +62,7 @@ impl base_openpublish::Publish for PublishWrapper {
         let context: crate::Context = context.clone().into();
         let context_view = context.to_view();
 
-        let result = Python::with_gil(|py| {
+        let result = Python::attach(|py| {
             self.inner
                 .call_method1(py, intern!(py, "rollback_pre_publish"), (context_view,))
         })
@@ -74,7 +74,7 @@ impl base_openpublish::Publish for PublishWrapper {
             )
         })?;
 
-        Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
+        Python::attach(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
             .map_err(|err| {
                 base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
             })?
@@ -92,7 +92,7 @@ impl base_openpublish::Publish for PublishWrapper {
     ) -> Result<Option<base_openpublish::Context>, base_openpublish::Error> {
         let context_view = crate::Context::from(context.clone()).to_view();
 
-        let result = Python::with_gil(|py| {
+        let result = Python::attach(|py| {
             self.inner
                 .call_method1(py, intern!(py, "publish"), (context_view,))
         })
@@ -101,7 +101,7 @@ impl base_openpublish::Publish for PublishWrapper {
         })?;
 
         let result =
-            Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
+            Python::attach(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
                 .map_err(|err| {
                     base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
                 })?
@@ -110,7 +110,7 @@ impl base_openpublish::Publish for PublishWrapper {
                     base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
                 })?;
 
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             let obj = result.clone_ref(py);
             let obj_ref = obj.bind_borrowed(py);
 
@@ -136,7 +136,7 @@ impl base_openpublish::Publish for PublishWrapper {
         let context: crate::Context = context.clone().into();
         let context_view = context.to_view();
 
-        let result = Python::with_gil(|py| {
+        let result = Python::attach(|py| {
             self.inner
                 .call_method1(py, intern!(py, "rollback_publish"), (context_view,))
         })
@@ -148,7 +148,7 @@ impl base_openpublish::Publish for PublishWrapper {
             )
         })?;
 
-        Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
+        Python::attach(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
             .map_err(|err| {
                 base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
             })?
@@ -166,7 +166,7 @@ impl base_openpublish::Publish for PublishWrapper {
     ) -> Result<Option<base_openpublish::Context>, base_openpublish::Error> {
         let context_view = crate::Context::from(context.clone()).to_view();
 
-        let result = Python::with_gil(|py| {
+        let result = Python::attach(|py| {
             self.inner
                 .call_method1(py, intern!(py, "post_publish"), (context_view,))
         })
@@ -175,7 +175,7 @@ impl base_openpublish::Publish for PublishWrapper {
         })?;
 
         let result =
-            Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
+            Python::attach(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
                 .map_err(|err| {
                     base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
                 })?
@@ -184,7 +184,7 @@ impl base_openpublish::Publish for PublishWrapper {
                     base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
                 })?;
 
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             let obj = result.clone_ref(py);
             let obj_ref = obj.bind_borrowed(py);
 
@@ -210,7 +210,7 @@ impl base_openpublish::Publish for PublishWrapper {
         let context: crate::Context = context.clone().into();
         let context_view = context.to_view();
 
-        let result = Python::with_gil(|py| {
+        let result = Python::attach(|py| {
             self.inner
                 .call_method1(py, intern!(py, "rollback_post_publish"), (context_view,))
         })
@@ -222,7 +222,7 @@ impl base_openpublish::Publish for PublishWrapper {
             )
         })?;
 
-        Python::with_gil(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
+        Python::attach(|py| pyo3_async_runtimes::tokio::into_future(result.bind(py).clone()))
             .map_err(|err| {
                 base_openpublish::Error::new_publish(err.to_string(), Some(Box::new(err)))
             })?

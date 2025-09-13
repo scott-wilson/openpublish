@@ -1,9 +1,14 @@
-# ruff: noqa: D103,D100,S101
+from __future__ import annotations
+
+import typing
 
 import hypothesis
 from hypothesis import strategies
 
 import openpublish
+
+if typing.TYPE_CHECKING:
+    from openpublish import Value
 
 
 @hypothesis.given(
@@ -21,13 +26,15 @@ import openpublish
         lambda children: strategies.one_of(
             strategies.lists(children, max_size=10),
             strategies.dictionaries(
-                strategies.text(max_size=10), children, max_size=10
+                strategies.text(max_size=10),
+                children,
+                max_size=10,
             ),
         ),
         max_leaves=10,
     ),
 )
-def test_context_get_success(key: str, value: openpublish.Value) -> None:
+def test_context_get_success(key: str, value: Value) -> None:
     ctx = openpublish.Context()
     ctx.set(key, value)
 
@@ -49,13 +56,15 @@ def test_context_get_success(key: str, value: openpublish.Value) -> None:
         lambda children: strategies.one_of(
             strategies.lists(children, max_size=10),
             strategies.dictionaries(
-                strategies.text(max_size=10), children, max_size=10
+                strategies.text(max_size=10),
+                children,
+                max_size=10,
             ),
         ),
         max_leaves=10,
     ),
 )
-def test_contextview_get_success(key: str, value: openpublish.Value) -> None:
+def test_contextview_get_success(key: str, value: Value) -> None:
     ctx = openpublish.Context()
     ctx.set(key, value)
     ctx_view = ctx.to_view()

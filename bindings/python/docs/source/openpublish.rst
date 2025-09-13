@@ -1,5 +1,5 @@
-pypublish package
-=================
+openpublish package
+===================
 
 Module contents
 ---------------
@@ -7,9 +7,7 @@ Module contents
 .. toctree::
    :maxdepth: 1
 
-   pypublish.transactions
-
-.. automodule:: pypublish
+.. automodule:: openpublish
    :members:
    :undoc-members:
    :show-inheritance:

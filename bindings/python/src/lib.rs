@@ -9,8 +9,8 @@ use context::{Context, ContextView};
 use publish::Publish;
 use runner::run;
 
-#[pymodule]
+#[pymodule(gil_used = false)]
 pub mod openpublish {
     #[pymodule_export]
-    use super::{run, Context, ContextView, Publish};
+    use super::{Context, ContextView, Publish, run};
 }

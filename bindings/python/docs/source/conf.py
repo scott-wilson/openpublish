@@ -1,23 +1,18 @@
-# ruff: noqa: D100
+# ruff: noqa: A001,D100,INP001,F401
 
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# import sphinx_rtd_theme
-# import pathlib
+import sphinx_rtd_theme
 
-# import sys
-
-# sys.path.append(str(pathlib.Path(__file__).parent.parent.parent))
-
-# import pypublish
+import openpublish
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Untitled Publish Framework"
+project = "Open Publish Framework"
 copyright = "2022, Scott Wilson"
 author = "Scott Wilson"
 release = "0.1.0"
